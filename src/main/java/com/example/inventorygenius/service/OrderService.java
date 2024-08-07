@@ -42,6 +42,9 @@ public class OrderService {
             if (item.getItemId() == null) { // Check if item is new
                 newItems.add(item);
             }
+            if(order.getCancel().equals("") || order.getCancel().equals(null)){
+                order.setCancel("Order Not Canceled");
+            }
             newItems.add(item);
         }
 
