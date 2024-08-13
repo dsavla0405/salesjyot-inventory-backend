@@ -47,6 +47,11 @@ public class OrderService {
             }
             newItems.add(item);
         }
+        
+        if (order.getSellerSKU().equals("") || order.getSellerSKU().equals(null)){
+            order.setSellerSKU(order.getItemPortalMapping().getSellerSkuCode());
+        }
+        
 
         // Now you can safely persist the Order entity
         return orderRepository.save(order);
