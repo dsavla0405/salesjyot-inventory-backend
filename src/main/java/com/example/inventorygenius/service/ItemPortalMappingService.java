@@ -44,8 +44,8 @@ public class ItemPortalMappingService {
         return itemportalmappingRepository.save(ipm);
     }
 
-    public ItemPortalMapping getItemPortalMappings(String portal, String portalSkuCode, String sellerSkuCode) {
-        return itemportalmappingRepository.findByPortalAndPortalSkuCodeAndSellerSkuCode(
-            portal, portalSkuCode, sellerSkuCode);
+    public ItemPortalMapping getItemPortalMappings(String portal, String portalSkuCode) {
+        return itemportalmappingRepository.findByPortalAndPortalSkuCode(
+            portal, portalSkuCode);
     }
 }
