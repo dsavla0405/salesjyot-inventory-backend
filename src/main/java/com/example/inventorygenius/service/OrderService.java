@@ -54,7 +54,7 @@ public class OrderService {
     }
 
     if (order.getShipByDate() == null || order.getShipByDate().equals("")) {
-        order.setShipByDate(LocalDate.now().toString());
+        order.setShipByDate(LocalDate.now());
     }
 
     // Now you can safely persist the Order entity
