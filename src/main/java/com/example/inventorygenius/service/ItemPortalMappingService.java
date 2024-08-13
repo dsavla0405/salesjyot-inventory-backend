@@ -36,7 +36,7 @@ public class ItemPortalMappingService {
 
                 ipm.setPortal(ipmDetails.getPortal());
                 ipm.setPortalSkuCode(ipmDetails.getPortalSkuCode());
-                ipm.setSellerSkuCode(ipmDetails.getSellerSkuCode());
+                ipm.setSkucode(ipmDetails.getSkucode());
                 ipm.setSupplier(ipmDetails.getSupplier());
                 ipm.setOrders(ipmDetails.getOrders());
 

@@ -28,8 +28,8 @@ public class ItemPortalMapping {
     @Column(name = "portal")
     private String portal;
 
-    @Column(name = "seller_sku_code")
-    private String sellerSkuCode;
+    @Column(name = "skucode")
+    private String skucode;
 
     @Column(name = "portal_sku_code")
     private String portalSkuCode;
@@ -50,11 +50,11 @@ public class ItemPortalMapping {
 
     }
 
-    public ItemPortalMapping(Long id, String portal, String sellerSkuCode, String portalSkuCode,
+    public ItemPortalMapping(Long id, String portal, String skucode, String portalSkuCode,
             Item item, Supplier supplier) {
         this.id = id;
         this.portal = portal;
-        this.sellerSkuCode = sellerSkuCode;
+        this.skucode = skucode;
         this.portalSkuCode = portalSkuCode;
         this.item = item;
         this.supplier = supplier;
@@ -77,12 +77,12 @@ public class ItemPortalMapping {
     }
     
 
-    public String getSellerSkuCode() {
-        return sellerSkuCode;
+    public String getSkucode() {
+        return skucode;
     }
 
-    public void setSellerSkuCode(String sellerSkuCode) {
-        this.sellerSkuCode = sellerSkuCode;
+    public void setSkucode(String skucode) {
+        this.skucode = skucode;
     }
 
     public String getPortalSkuCode() {

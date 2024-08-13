@@ -14,7 +14,7 @@ import com.example.inventorygenius.entity.Supplier;
 public interface ItemRepository extends JpaRepository<Item, Long> {
    // Optional<Item> findBySKUCodeAndItemSuppliersSupplier(String skuCode, Supplier supplier);
 
-   Item findBySuppliers_SupplierIdAndSellerSKUCode(Long supplierId, String sellerSKUCode);
+   Item findBySuppliers_SupplierIdAndSKUCode(Long supplierId, String sKUCode);
    List<Item> findBySuppliersSupplierId(Long supplierId);
    Item findBySellerSKUCodeAndDescriptionContaining(String sellerSKUCode, String description);
    Item findBySellerSKUCode(String sellerSKUCode);
