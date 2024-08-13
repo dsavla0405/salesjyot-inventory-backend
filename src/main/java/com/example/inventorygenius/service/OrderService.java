@@ -50,7 +50,7 @@ public class OrderService {
     }
 
     if (order.getSellerSKU() == null || order.getSellerSKU().equals("")) {
-        order.setSellerSKU(order.getItemPortalMapping().getSellerSkuCode());
+        order.setSellerSKU(order.getItemPortalMapping().getSkucode());
     }
 
     if (order.getShipByDate() == null || order.getShipByDate().equals("")) {
