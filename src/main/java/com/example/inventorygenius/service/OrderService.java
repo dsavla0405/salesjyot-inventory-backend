@@ -12,6 +12,7 @@ import com.example.inventorygenius.entity.Stock;
 import com.example.inventorygenius.entity.StockInward;
 import com.example.inventorygenius.repository.OrderRepository;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -36,26 +37,29 @@ public class OrderService {
 
     // Method to add a new item
     public Order addOrder(Order order) {
-        // Create new Item entities within the transaction
-        List<Item> newItems = new ArrayList<>();
-        for (Item item : order.getItems()) {
-            if (item.getItemId() == null) { // Check if item is new
-                newItems.add(item);
-            }
-            if(order.getCancel().equals("") || order.getCancel().equals(null)){
-                order.setCancel("Order Not Canceled");
-            }
+    // Create new Item entities within the transaction
+    List<Item> newItems = new ArrayList<>();
+    for (Item item : order.getItems()) {
+        if (item.getItemId() == null) { // Check if item is new
             newItems.add(item);
         }
-        
-        if (order.getSellerSKU().equals("") || order.getSellerSKU().equals(null)){
-            order.setSellerSKU(order.getItemPortalMapping().getSellerSkuCode());
+        if (order.getCancel() == null || order.getCancel().isEmpty()) {
+            order.setCancel("Order Not Canceled");
         }
-        
-
-        // Now you can safely persist the Order entity
-        return orderRepository.save(order);
+        newItems.add(item);
     }
+
+    if (order.getSellerSKU() == null || order.getSellerSKU().isEmpty()) {
+        order.setSellerSKU(order.getItemPortalMapping().getSellerSkuCode());
+    }
+
+    if (order.getShipByDate() == null || order.getShipByDate().isEmpty()) {
+        order.setShipByDate(LocalDate.now().toString());
+    }
+
+    // Now you can safely persist the Order entity
+    return orderRepository.save(order);
+}
 
     // Method to get all items
     public List<Order> getAllOrders() {
