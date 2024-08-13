@@ -108,12 +108,12 @@ public class ItemSupplierController {
         }
     }
 
-    @GetMapping("/search/{supplierId}/{sellerSKUCode}")
+    @GetMapping("/search/{supplierId}/{skucode}")
     public Item findItemsBySupplierAndSellerSKUCode(
             @PathVariable("supplierId") Long supplierId,
-            @PathVariable("sellerSKUCode") String sellerSKUCode) {
+            @PathVariable("skucode") String skucode) {
         // Use the ItemRepository to find items based on the supplied parameters
-        return itemRepository.findBySuppliers_SupplierIdAndSellerSKUCode(supplierId, sellerSKUCode);
+        return itemRepository.findBySuppliers_SupplierIdAndSKUCode(supplierId, skucode);
     }
 
     @GetMapping("/search/{supplierId}")
@@ -157,7 +157,7 @@ public ResponseEntity<String> findSellerSKUCodesBySellerName(@PathVariable Strin
     List<Item> items = itemRepository.findBySuppliersSupplierId(supplier.getSupplierId());
 
     for (Item item : items) {
-        sellerSKUCodeBuilder.append(item.getSellerSKUCode()).append(", ");
+        sellerSKUCodeBuilder.append(item.getSKUCode()).append(", ");
     }
 
     String sellerSKUCode = sellerSKUCodeBuilder.toString().replaceAll(", $", "");
