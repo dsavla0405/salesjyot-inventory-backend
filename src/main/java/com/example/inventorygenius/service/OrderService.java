@@ -43,17 +43,17 @@ public class OrderService {
         if (item.getItemId() == null) { // Check if item is new
             newItems.add(item);
         }
-        if (order.getCancel() == null || order.getCancel().isEmpty()) {
+        if (order.getCancel() == null || order.getCancel().equals("")) {
             order.setCancel("Order Not Canceled");
         }
         newItems.add(item);
     }
 
-    if (order.getSellerSKU() == null || order.getSellerSKU().isEmpty()) {
+    if (order.getSellerSKU() == null || order.getSellerSKU().equals("")) {
         order.setSellerSKU(order.getItemPortalMapping().getSellerSkuCode());
     }
 
-    if (order.getShipByDate() == null || order.getShipByDate().isEmpty()) {
+    if (order.getShipByDate() == null || order.getShipByDate().equals("")) {
         order.setShipByDate(LocalDate.now().toString());
     }
 
