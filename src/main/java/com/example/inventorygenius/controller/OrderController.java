@@ -80,7 +80,7 @@ public ResponseEntity<Order> updateOrder(@PathVariable Long orderId, @RequestBod
         existingOrder.setProductDescription(updatedOrder.getProductDescription());
         existingOrder.setQty(updatedOrder.getQty());
         existingOrder.setShipByDate(updatedOrder.getShipByDate());
-        existingOrder.setSellerSKU(updatedOrder.getSellerSKU());
+        existingOrder.setSkucode(updatedOrder.getSkucode());
         existingOrder.setCancel(updatedOrder.getCancel());
         existingOrder.setItems(updatedOrder.getItems());
         existingOrder.setAwbNo(updatedOrder.getAwbNo());

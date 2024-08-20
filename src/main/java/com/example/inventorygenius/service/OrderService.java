@@ -49,8 +49,8 @@ public class OrderService {
         newItems.add(item);
     }
 
-    if (order.getSellerSKU() == null || order.getSellerSKU().equals("")) {
-        order.setSellerSKU(order.getItemPortalMapping().getSkucode());
+    if (order.getSkucode() == null || order.getSkucode().equals("")) {
+        order.setSkucode(order.getItemPortalMapping().getSkucode());
     }
 
     if (order.getShipByDate() == null || order.getShipByDate().equals("")) {
@@ -99,7 +99,7 @@ public class OrderService {
             existingOrder.setPortalOrderNo(updatedOrder.getPortalOrderNo());
             existingOrder.setPortalOrderLineId(updatedOrder.getPortalOrderLineId());
             existingOrder.setPortalSKU(updatedOrder.getPortalSKU());
-            existingOrder.setSellerSKU(updatedOrder.getSellerSKU());
+            existingOrder.setSkucode(updatedOrder.getSkucode());
             existingOrder.setProductDescription(updatedOrder.getProductDescription());
             existingOrder.setQty(updatedOrder.getQty());
             existingOrder.setShipByDate(updatedOrder.getShipByDate());
