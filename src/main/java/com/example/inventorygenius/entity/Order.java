@@ -49,8 +49,8 @@ public class Order {
     @Column(name = "portal_sku")
     private String portalSKU;
 
-    @Column(name = "seller_sku")
-    private String sellerSKU;
+    @Column(name = "skucode")
+    private String skucode;
 
     @Column(name = "product_description")
     private String productDescription;
@@ -103,7 +103,7 @@ public class Order {
     }
 
     public Order(Long orderId, LocalDate Date, String orderNo, String portal, String portalOrderNo, String portalOrderLineId,
-            String portalSKU, String sellerSKU, String productDescription, double qty, LocalDate shipByDate, String dispatched,
+            String portalSKU, String skucode, String productDescription, double qty, LocalDate shipByDate, String dispatched,
             String courier, String cancel, String awbNo, String orderStatus) {
         this.orderId = orderId;
         this.orderNo = orderNo;
@@ -111,7 +111,7 @@ public class Order {
         this.portalOrderNo = portalOrderNo;
         this.portalOrderLineId = portalOrderLineId;
         this.portalSKU = portalSKU;
-        this.sellerSKU = sellerSKU;
+        this.skucode = skucode;
         this.productDescription = productDescription;
         this.qty = qty;
         this.shipByDate = shipByDate;
@@ -187,12 +187,12 @@ public class Order {
         this.portalSKU = portalSKU;
     }
 
-    public String getSellerSKU() {
-        return sellerSKU;
+    public String getSkucode() {
+        return skucode;
     }
 
-    public void setSellerSKU(String sellerSKU) {
-        this.sellerSKU = sellerSKU;
+    public void setSkucode(String sellerSKU) {
+        this.skucode = skucode;
     }
 
     public String getProductDescription() {

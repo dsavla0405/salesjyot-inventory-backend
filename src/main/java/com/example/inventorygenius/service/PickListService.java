@@ -190,7 +190,7 @@ public class PickListService {
 
         for (Order order : orders) {
             order = orderService.findById(order.getOrderId()); // Update the order object
-            System.out.println("supplierSKU = " + order.getSellerSKU());
+            //System.out.println("supplierSKU = " + order.getSellerSKU());
             Boolean generatedOrder = generated(order);
             if (!generatedOrder){
                 if (order.getItems() != null) {
