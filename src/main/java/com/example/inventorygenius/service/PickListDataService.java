@@ -69,9 +69,11 @@ public class PickListDataService {
         }
 
         // Find item and storage
+        System.out.println("sellerSKU = " + pickListData.getSellerSKU());
+        System.out.println("description = " + pickListData.getDescription());
         Item itemP = itemSupplierService.findItemsBySellerSKUAndDescription(pickListData.getSellerSKU(), pickListData.getDescription());
         Storage storage = storageService.getStorageByBinAndRack(pickListData.getBinNumber(), pickListData.getRackNumber(), itemP.getSKUCode());
-
+        
         // Set item and storage in pickListData
         pickListData.setStorage(storage);
         pickListData.setItem(itemP);
@@ -102,6 +104,7 @@ public class PickListDataService {
     }
 
     public void changeStockCount(Item i, Double qty){
+        System.out.println("skucode1 - " + i.getSKUCode());
         StockCount s = stockCountService.getStockCountBySKUCode(i.getSKUCode());
                 Double prevCount = s.getCount();
                 s.setCount(prevCount - qty);
