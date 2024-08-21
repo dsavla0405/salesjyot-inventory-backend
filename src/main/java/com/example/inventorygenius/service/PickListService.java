@@ -202,7 +202,7 @@ public class PickListService {
                         orderData.setOrderNo(order.getOrderNo());
                         orderData.setPortal(order.getPortal());
                         orderData.setSellerSKU(item.getSellerSKUCode());
-                        orderData.setDescription(order.getProductDescription());
+                        orderData.setDescription(item.getDescription());
                         orderData.setImg(item.getImg());
                         orderData.setPickQty((order.getQty()));
                         orderData.setSellerSKU(item.getSellerSKUCode());
