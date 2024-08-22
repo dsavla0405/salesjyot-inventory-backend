@@ -165,6 +165,10 @@ public class PickListDataService {
             throw new IllegalArgumentException("No picklist data found with the provided picklist number: " + pickListNumber);
         }
     }
+
+    public List<PickListData> findByPickListNumber(Long pickListNumber) {
+        return pickListDataRepository.findByPickListNumber(pickListNumber);
+    }
     
 }
        

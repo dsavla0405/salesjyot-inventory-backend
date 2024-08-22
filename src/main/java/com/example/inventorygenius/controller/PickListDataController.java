@@ -53,5 +53,10 @@ public class PickListDataController {
         String bomCode = toDelete.get(0).getBomCode();
         pickListService.deletePickListByPickListNumber(pickListNumber, bomCode);
     }
+
+    @GetMapping("/picklistdata")
+    public List<PickListData> getPickListDataByNumber(@RequestParam("pickListNumber") Long pickListNumber) {
+        return pickListDataService.findByPickListNumber(pickListNumber);
+    }
 }
 

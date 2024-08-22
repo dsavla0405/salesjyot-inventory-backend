@@ -45,6 +45,7 @@ public class ItemPortalMappingService {
     }
 
     public ItemPortalMapping getItemPortalMappings(String portal, String portalSkuCode) {
+        System.out.println(portalSkuCode);
         return itemportalmappingRepository.findByPortalAndPortalSkuCode(
             portal, portalSkuCode);
     }
