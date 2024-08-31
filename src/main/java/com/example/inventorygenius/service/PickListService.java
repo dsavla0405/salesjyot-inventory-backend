@@ -362,7 +362,7 @@ public class PickListService {
     
     
 
-    public void processScannedItem(Double picklistNumber, String sku, Double scannedQty) {
+    public void processScannedItem(Long picklistNumber, String sku, Double scannedQty) {
         boolean isValid = isScannedItemValid(picklistNumber, sku, scannedQty);
         if (isValid) {
             System.out.println("Scanned item is valid and quantity is correct.");
