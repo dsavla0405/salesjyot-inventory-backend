@@ -335,9 +335,9 @@ public class PickListService {
     
         // Log the retrieved picklist data for debugging
         System.out.println("Retrieved picklist data:");
-        for (PickListData p : picklistDataList) {
-            System.out.println("SKU Code: " + p.getItem().getSKUCode() + ", Pick Quantity: " + p.getPickQty());
-        }
+        // for (PickListData p : picklistDataList) {
+        //     System.out.println("SKU Code: " + p.getItem().getSKUCode() + ", Pick Quantity: " + p.getPickQty());
+        // }
     
         // Iterate through the retrieved picklist data
         for (PickListData p : picklistDataList) {
