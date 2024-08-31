@@ -268,6 +268,16 @@ public ResponseEntity<PickList> createPickList(@RequestBody PickList pickList) {
     public String getMethodName(@RequestParam String orderNo) {
         return pickListService.getDefaultBomCode(orderNo);
     }
-    
+
+    @GetMapping("/validate")
+    public ResponseEntity<Boolean> validateScannedItem(
+            @RequestParam Long picklistNumber, 
+            @RequestParam String sku, 
+            @RequestParam Double scannedQty) {
+        // Call the validation service and return the result wrapped in ResponseEntity
+        boolean isValid = pickListService.isScannedItemValid(picklistNumber, sku, scannedQty);
+        return ResponseEntity.ok(isValid);
+    }
+
 }
 
