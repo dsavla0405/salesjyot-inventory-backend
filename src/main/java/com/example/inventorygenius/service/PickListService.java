@@ -329,6 +329,49 @@ public class PickListService {
         }
     }
     
+    public boolean isScannedItemValid(Long picklistNumber, String sku, Double scannedQty) {
+        // Retrieve the list of picklist data for the given picklist number
+        List<PickListData> picklistDataList = pickListDataService.findByPickListNumber(picklistNumber);
+    
+        // Log the retrieved picklist data for debugging
+        System.out.println("Retrieved picklist data:");
+        for (PickListData p : picklistDataList) {
+            System.out.println("SKU Code: " + p.getItem().getSKUCode() + ", Pick Quantity: " + p.getPickQty());
+        }
+    
+        // Iterate through the retrieved picklist data
+        for (PickListData p : picklistDataList) {
+            // Check if the SKU code matches
+            if (sku.equals(p.getItem().getSKUCode())) {
+                // Check if scanned quantity is within the pick quantity range
+                if (scannedQty <= p.getPickQty()) {
+                    System.out.println("Valid scan: SKU matches and quantity is within range.");
+                    return true; // Valid scan
+                } else {
+                    System.out.println("Invalid scan: Quantity exceeds allowed pick quantity.");
+                    return false; // Scanned quantity exceeds pick quantity
+                }
+            }
+        }
+        
+        // SKU not found in picklist
+        System.out.println("Invalid scan: SKU not found in picklist.");
+        return false;
+    }
+    
+    
+    
+
+    public void processScannedItem(Double picklistNumber, String sku, Double scannedQty) {
+        boolean isValid = isScannedItemValid(picklistNumber, sku, scannedQty);
+        if (isValid) {
+            System.out.println("Scanned item is valid and quantity is correct.");
+        } else {
+            System.out.println("Invalid scan or quantity exceeds allowed pick quantity.");
+        }
+    }
+    
+    
 }
 
 
