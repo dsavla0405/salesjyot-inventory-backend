@@ -21,6 +21,6 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
    Item findByDescriptionContaining(String description);
    Item findBySKUCode(String sKUCode);
    List<Item> findByParentSKU(String parentSKU);
-   Item findBySellerSKUCodeAndDescription(String sellerSKU, String description);
+   Item findBySKUCodeAndDescription(String sKUCode, String description);
 
 }
