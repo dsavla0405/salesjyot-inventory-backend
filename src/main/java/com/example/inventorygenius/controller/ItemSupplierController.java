@@ -131,12 +131,12 @@ public List<String> findSellerSKUCodesBySupplier(
     return sellerSKUCodes;
 }
 
-@GetMapping("/order/search/{sellerSKUCode}/{description}")
+@GetMapping("/order/search/{skucode}/{description}")
 public Item findItemsBySellerSKUCodeAndDescription(
-        @PathVariable(value = "sellerSKUCode") String sellerSKUCode,
+        @PathVariable(value = "skucode") String skucode,
         @PathVariable(value = "description") String description) {
     // Check if both parameters are provided
-    return itemRepository.findBySellerSKUCodeAndDescriptionContaining(sellerSKUCode, description);
+    return itemRepository.findBySKUCodeAndDescription(skucode, description);
 }
 
 @GetMapping("/search/skucode/{skucode}")
