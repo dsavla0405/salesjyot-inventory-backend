@@ -118,7 +118,7 @@ public class ItemSupplierService {
         }
     }
 
-    public Item findItemsBySellerSKUAndDescription(String sellerSKU, String description) {
-        return itemRepository.findBySellerSKUCodeAndDescription(sellerSKU, description);
+    public Item findItemsBySellerSKUAndDescription(String skucode, String description) {
+        return itemRepository.findBySKUCodeAndDescription(skucode, description);
     }
 }
