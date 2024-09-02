@@ -18,8 +18,6 @@ import com.example.inventorygenius.service.ItemSupplierService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -72,10 +70,14 @@ public class ItemPortalMappingController {
     }
 
     @GetMapping("/Portal/PortalSku")
-    public ItemPortalMapping getItemPortalMappingBuPortalPortalSKU(
-        @RequestParam String portal,
-        @RequestParam String portalSKU) {
-        return itemService.getItemPortalMappings(portal, portalSKU);
-    }
+public ItemPortalMapping getItemPortalMappingBuPortalPortalSKU(
+    @RequestParam String portal,
+    @RequestParam String portalSKU) {
+    log.info("Fetching ItemPortalMapping for portal: {}, portalSKU: {}", portal, portalSKU);
+    ItemPortalMapping result = itemService.getItemPortalMappings(portal, portalSKU);
+    log.info("Result: {}", result);
+    return result;
+}
+
     
 }
