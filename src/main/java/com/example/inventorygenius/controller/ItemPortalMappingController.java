@@ -70,14 +70,14 @@ public class ItemPortalMappingController {
     }
 
     @GetMapping("/Portal/PortalSku")
-public ItemPortalMapping getItemPortalMappingBuPortalPortalSKU(
-    @RequestParam String portal,
-    @RequestParam String portalSKU) {
-    log.info("Fetching ItemPortalMapping for portal: {}, portalSKU: {}", portal, portalSKU);
-    ItemPortalMapping result = itemService.getItemPortalMappings(portal, portalSKU);
-    log.info("Result: {}", result);
-    return result;
-}
+    public ItemPortalMapping getItemPortalMappingBuPortalPortalSKU(
+        @RequestParam String portal,
+        @RequestParam String portalSKU) {
+        System.out.println("Fetching ItemPortalMapping for portal:"+portal+"portalSKU:"+portalSKU+".");
+        ItemPortalMapping result = itemService.getItemPortalMappings(portal, portalSKU);
+        System.out.println("result"+result.getPortalSkuCode());
+        return result;
+    }
 
     
 }
