@@ -15,6 +15,7 @@ public class OrderData {
     private Double pickQty;
     private String img;
     private String bomCode;
+    private String skucode;
 
     public LocalDate getDate() {
         return date;
@@ -81,6 +82,13 @@ public class OrderData {
     }
     public void setBomCode(String bomCode) {
         this.bomCode = bomCode;
+    }
+    
+    public String getSkucode() {
+        return skucode;
+    }
+    public void setSkucode(String skucode) {
+        this.skucode = skucode;
     }
     
 }

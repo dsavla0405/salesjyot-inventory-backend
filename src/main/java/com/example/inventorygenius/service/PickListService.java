@@ -206,6 +206,7 @@ public class PickListService {
                         orderData.setImg(item.getImg());
                         orderData.setPickQty((order.getQty()));
                         orderData.setSellerSKU(item.getSellerSKUCode());
+                        orderData.setSkucode(item.getSKUCode());
                         Double totalQty = order.getQty();
 
                         if (getBestStorage(item, totalQty).size() > 0){
