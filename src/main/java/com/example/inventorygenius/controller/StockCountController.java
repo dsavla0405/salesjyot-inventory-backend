@@ -54,5 +54,16 @@ public class StockCountController {
                 ? new ResponseEntity<>(stockCount, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
+
+    @GetMapping("/items")
+    public List<StockCount> getStockCountsForItems() {
+        return stockCountService.getStockCountsByItem();
+    }
+
+    @GetMapping("/combos")
+    public List<StockCount> getStockCountsForCombos() {
+        return stockCountService.getStockCountsByCombo();
+    }
+
 }
 
