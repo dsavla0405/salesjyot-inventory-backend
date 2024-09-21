@@ -138,6 +138,18 @@ public class Item {
     @JsonIgnore
     private List<PackingListData> packingListData = new ArrayList<>();
 
+    @OneToMany(mappedBy = "item")
+    @JsonIgnore
+    private List<StockTransfer> stockTransfers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<ComboItem> comboItems = new ArrayList<>();
+
+    @OneToMany(mappedBy = "comboName", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Combo> combos = new ArrayList<>();
+
     public Item() {
 
     }
@@ -403,6 +415,30 @@ public String toString() {
 
     public void setPackingListData(List<PackingListData> packingListData) {
         this.packingListData = packingListData;
+    }
+
+    public List<StockTransfer> getStockTransfers() {
+        return stockTransfers;
+    }
+
+    public void setStockTransfers(List<StockTransfer> stockTransfers) {
+        this.stockTransfers = stockTransfers;
+    }
+
+    public List<ComboItem> getComboItems() {
+        return comboItems;
+    }
+
+    public void setComboItems(List<ComboItem> comboItems) {
+        this.comboItems = comboItems;
+    }
+
+    public List<Combo> getCombos() {
+        return combos;
+    }
+
+    public void setCombos(List<Combo> combos) {
+        this.combos = combos;
     }
 
 }

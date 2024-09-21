@@ -41,4 +41,14 @@ public class StockCountService {
     public StockCount getStockCountBySKUCode(String skuCode) {
         return stockCountRepository.findByItem_SKUCode(skuCode);
     }
+
+    // Fetch stock counts that are linked to Items
+    public List<StockCount> getStockCountsByItem() {
+        return stockCountRepository.findByItemIsNotNull();
+    }
+
+    // Fetch stock counts that are linked to Combos
+    public List<StockCount> getStockCountsByCombo() {
+        return stockCountRepository.findByComboIsNotNull();
+    }
 }

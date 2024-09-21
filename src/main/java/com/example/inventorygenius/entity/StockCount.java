@@ -35,6 +35,10 @@ public class StockCount {
     @JoinColumn(name = "item_id") // Foreign key in StockCount table
     private Item item;
 
+    @OneToOne
+    @JoinColumn(name = "combo_id") // Foreign key in StockCount table
+    private Combo combo;
+
     public StockCount() {
 
     }
@@ -66,6 +70,14 @@ public class StockCount {
 
     public void setItem(Item item) {
         this.item = item;
+    }
+
+    public Combo getCombo() {
+        return combo;
+    }
+
+    public void setCombo(Combo combo) {
+        this.combo = combo;
     }
 
 }

@@ -73,9 +73,9 @@ public class ItemPortalMappingController {
     public ItemPortalMapping getItemPortalMappingBuPortalPortalSKU(
         @RequestParam String portal,
         @RequestParam String portalSKU) {
-        System.out.println("Fetching ItemPortalMapping for portal:"+portal+"portalSKU:"+portalSKU+".");
+        System.out.println("Fetching ItemPortalMapping for portal:"+portal+" portalSKU:"+portalSKU+".");
         ItemPortalMapping result = itemService.getItemPortalMappings(portal, portalSKU);
-        System.out.println("result"+result.getPortalSkuCode());
+        //System.out.println("result"+result.getPortalSkuCode());
         return result;
     }
 

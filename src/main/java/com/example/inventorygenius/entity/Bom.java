@@ -55,6 +55,10 @@ public class Bom {
     @JsonIgnore
     private List<BomItem> itemsInBom = new ArrayList<>();
 
+    @OneToMany(mappedBy = "boms", fetch = FetchType.EAGER)
+    @JsonIgnore
+    private List<ComboItem> comboItems = new ArrayList<>();
+
     public Bom() {
 
     }
@@ -121,6 +125,14 @@ public class Bom {
 
     public void setBomCode(String bomCode) {
         this.bomCode = bomCode;
+    }
+
+    public List<ComboItem> getComboItems() {
+        return comboItems;
+    }
+
+    public void setComboItems(List<ComboItem> comboItems) {
+        this.comboItems = comboItems;
     }
     
 }
