@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.inventorygenius.entity.Bom;
 import com.example.inventorygenius.entity.Item;
+import com.example.inventorygenius.entity.StockInward;
 import com.example.inventorygenius.entity.Storage;
 import com.example.inventorygenius.service.StorageService;
 
@@ -51,5 +52,10 @@ public class StorageController {
     public void deleteStorage(@PathVariable("id") Long id) {
         System.out.println("deleted");
         storageService.deleteStorageById(id);
+    }
+
+    @GetMapping("/user/email")
+    public List<Storage> getStorageByUser(@RequestParam String email) {
+        return storageService.getStorageByUser(email);
     }
 }

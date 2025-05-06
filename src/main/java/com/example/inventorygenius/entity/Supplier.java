@@ -53,15 +53,19 @@ public class Supplier {
     @JsonIgnore
     private List<Item> items = new ArrayList<>();
 
+    @Column (name = "user-email")
+    private String userEmail;
+
     public Supplier() {
 
     }
 
-    public Supplier(Long supplierId, String supplierName, String address, String phonel) {
+    public Supplier(Long supplierId, String supplierName, String address, String phonel, String userEmail) {
         this.supplierId = supplierId;
         this.supplierName = supplierName;
         this.address = address;
         this.phonel = phonel;
+        this.userEmail = userEmail;
     }
 
     public Long getSupplierId() {
@@ -103,6 +107,13 @@ public class Supplier {
     public void setItems(List<Item> items) {
         this.items = items;
     }
-    
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
 
 }

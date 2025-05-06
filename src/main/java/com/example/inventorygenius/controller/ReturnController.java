@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.inventorygenius.entity.Bom;
 import com.example.inventorygenius.entity.Return;
+import com.example.inventorygenius.entity.Stock;
 import com.example.inventorygenius.entity.StockCount;
 import com.example.inventorygenius.entity.Storage;
 import com.example.inventorygenius.service.ReturnService;
@@ -45,4 +46,8 @@ public class ReturnController {
         return new ResponseEntity<>(updatedStorage, HttpStatus.OK);
     }
 
+    @GetMapping("/user/email")
+    public List<Return> getReturnsByUser(@RequestParam String email) {
+        return returnService.getReturnsByUser(email);
+    }
 }

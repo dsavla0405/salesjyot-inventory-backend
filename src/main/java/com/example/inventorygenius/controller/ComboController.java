@@ -1,6 +1,7 @@
 package com.example.inventorygenius.controller;
 
 import com.example.inventorygenius.entity.Combo;
+import com.example.inventorygenius.entity.ItemPortalMapping;
 import com.example.inventorygenius.service.ComboService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -56,4 +57,9 @@ public class ComboController {
             return ResponseEntity.notFound().build();
         }
     }
+
+    @GetMapping("/user/email")
+    public List<Combo> getComboByUser(@RequestParam String email) {
+        return comboService.getComboByUser(email);
+    } 
 }

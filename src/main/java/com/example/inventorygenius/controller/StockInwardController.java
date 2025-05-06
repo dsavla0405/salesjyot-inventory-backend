@@ -3,6 +3,7 @@ package com.example.inventorygenius.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.inventorygenius.entity.Item;
@@ -17,6 +18,9 @@ import com.example.inventorygenius.service.StockService;
 
 import java.time.LocalDate;
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/stockInward")
@@ -35,7 +39,9 @@ public class StockInwardController {
     private StockCountService stockCountService;
 
     @PostMapping
+    @Transactional
     public ResponseEntity<StockInward> addStockInward(@RequestBody StockInward stockInward) {
+        System.out.println("loc name = " + stockInward.getLocation().getLocationName());
 
         StockInward savedStockInward = new StockInward();
 
@@ -43,6 +49,7 @@ public class StockInwardController {
         savedStockInward.setItem(stockInward.getItem());
         savedStockInward.setQty(stockInward.getQty());
         savedStockInward.setSkucode(stockInward.getSkucode());
+        savedStockInward.setUserEmail(stockInward.getUserEmail());
 
         Long stockInwardId = stockInward.getStockInwardId();
         String number = String.valueOf(stockInwardId);
@@ -56,27 +63,34 @@ public class StockInwardController {
         stock.setSource("stock inward");
         stock.setMessage("stock inward added");
         stock.setNumber("id = " + number);
-
+        stock.setUserEmail(stockInward.getUserEmail());
+        stock.setLocation(stockInward.getLocation());
         Stock savedStock = stockService.addStock(stock);
         System.out.println(savedStock.getMessage());
         savedStockInward.setStock(savedStock);
 
-        String skuCode = stockInward.getSkucode();
-        StockCount stockCount = stockCountService.getStockCountBySKUCode(skuCode);
+        savedStockInward.setLocation(stockInward.getLocation());
 
+        String skuCode = stockInward.getSkucode();
+        StockCount stockCount = stockCountService.getStockCountBySKUCode(skuCode, savedStockInward.getUserEmail());
         if (stockCount == null) {
             stockCount = new StockCount();
             stockCount.setCount(Double.parseDouble(stockInward.getQty()));
 
             Item retrievedItem = itemSupplierService.getItemBySKUCode(skuCode);
             stockCount.setItem(retrievedItem);
+            System.out.println("stock count initialize with skucode : " + stockCount.getItem().getSKUCode());
         } else {
             double currentCount = stockCount.getCount();
             double additionalCount = Double.parseDouble(stockInward.getQty());
             stockCount.setCount(currentCount + additionalCount);
+            System.out.println("stock count initialize with skucode : " + stockCount.getItem().getSKUCode());
+
         }
+        stockCount.setUserEmail(stockInward.getUserEmail());
 
         stockCountService.saveStockCount(stockCount);
+        
 
         StockInward si = stockInwardService.addStockInward(savedStockInward);
 
@@ -112,7 +126,7 @@ public void deleteStockInward(@PathVariable("id") Long stockInwardId) {
 
         Stock stock = updatedStockInward.getStock();
 
-        StockCount stockCount = stockCountService.getStockCountBySKUCode(stockInwardDetails.getSkucode());
+        StockCount stockCount = stockCountService.getStockCountBySKUCode(stockInwardDetails.getSkucode(), stockInwardDetails.getUserEmail());
         stockCount.setCount(Double.parseDouble(updatedStockInward.getQty()));
 
 
@@ -128,6 +142,7 @@ public void deleteStockInward(@PathVariable("id") Long stockInwardId) {
         
         stock.setSkucode(updatedStockInward.getSkucode());
         stock.setAddQty(updatedStockInward.getQty());
+        stock.setLocation(updatedStockInward.getLocation());
 
         // Save the updated Stock entity
         stockService.updateStock(stock.getStockId(), stock);
@@ -135,5 +150,9 @@ public void deleteStockInward(@PathVariable("id") Long stockInwardId) {
         return new ResponseEntity<>(updatedStockInward, HttpStatus.OK);
     }
 
-
+    @GetMapping("/user/email")
+    public List<StockInward> getStockInwardsByUser(@RequestParam String email) {
+        return stockInwardService.getStockInwardsByUser(email);
+    }
+    
 }

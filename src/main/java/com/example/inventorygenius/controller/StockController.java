@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.inventorygenius.entity.Stock;
+import com.example.inventorygenius.entity.StockInward;
 import com.example.inventorygenius.entity.Storage;
 import com.example.inventorygenius.service.StockService;
 
@@ -46,5 +47,10 @@ public class StockController {
     @GetMapping("/update-counts")
     public Map<String, Double> updateStockCounts() {
         return stockService.printGroupedStocksAndCalculateCounts();
+    }
+
+    @GetMapping("/user/email")
+    public List<Stock> getStocksByUser(@RequestParam String email) {
+        return stockService.getStocksByUser(email);
     }
 }

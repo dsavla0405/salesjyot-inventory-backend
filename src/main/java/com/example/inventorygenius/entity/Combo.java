@@ -38,15 +38,19 @@ public class Combo {
     @JsonIgnore
     private StockCount stockCount;
 
+    @Column (name = "user-email")
+    private String userEmail;
+
     public Combo(){
         
     }
 
-    public Combo(Long comboId, Item comboName, List<ComboItem> comboItems, Double qtyToMake) {
+    public Combo(Long comboId, Item comboName, List<ComboItem> comboItems, Double qtyToMake, String userEmail) {
         this.comboId = comboId;
         this.comboName = comboName;
         this.comboItems = comboItems;
         this.qtyToMake = qtyToMake;
+        this.userEmail = userEmail;
     }
 
     public Long getComboId() {
@@ -87,6 +91,14 @@ public class Combo {
 
     public void setStockCount(StockCount stockCount) {
         this.stockCount = stockCount;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
     
 }

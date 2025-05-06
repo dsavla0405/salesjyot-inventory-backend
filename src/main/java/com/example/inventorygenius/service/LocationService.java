@@ -38,4 +38,12 @@ public class LocationService {
     public void deleteLocation(Long locationId) {
         locationRepository.deleteById(locationId);
     }
+
+    public Location findByName(String name, String email){
+        return locationRepository.findByLocationNameAndUserEmail(name, email);
+    }
+
+    public List<Location> getLocationByUser(String email){
+        return locationRepository.findByUserEmail(email);
+    }
 }

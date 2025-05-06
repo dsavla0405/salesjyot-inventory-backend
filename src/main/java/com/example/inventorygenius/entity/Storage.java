@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
@@ -52,15 +53,24 @@ public class Storage {
     @JsonIgnore
     private List<PickListData> pickListData = new ArrayList<>();
 
+    @ManyToOne()
+    @JoinColumn(name = "location_id")
+    private Location location;
+
+    @Column (name = "user-email")
+    private String userEmail;
+
     public Storage() {
 
     }
 
-    public Storage(Long storageId, String binNumber, String rackNumber, String qty) {
+    public Storage(Long storageId, String binNumber, String rackNumber, String qty, String userEmail, Location location) {
         this.storageId = storageId;
         this.binNumber = binNumber;
         this.rackNumber = rackNumber;
         this.qty = qty;
+        this.userEmail = userEmail;
+        this.location = location;
     }
 
     public Long getStorageId() {
@@ -127,6 +137,22 @@ public class Storage {
 
     public void setPickListData(List<PickListData> pickListData) {
         this.pickListData = pickListData;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
 }

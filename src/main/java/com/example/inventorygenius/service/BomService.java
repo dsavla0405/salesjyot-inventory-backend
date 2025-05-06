@@ -62,10 +62,13 @@ public class BomService {
         bomRepository.deleteById(id);
     }
 
-    public Bom getBomByBomCode(String bomCode) {
-        return bomRepository.findByBomCode(bomCode)
+    public Bom getBomByBomCode(String bomCode, String email) {
+        return bomRepository.findByBomCodeAndUserEmail(bomCode, email)
                 .orElseThrow(() -> new RuntimeException("Bom not found with bomCode " + bomCode));
     }
 
+    public List<Bom> getBomByEmail(String email) {
+        return bomRepository.findByUserEmail(email);
+    }
 
 }

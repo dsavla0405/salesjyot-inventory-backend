@@ -1,5 +1,6 @@
 package com.example.inventorygenius.service;
 
+import com.example.inventorygenius.entity.StockInward;
 import com.example.inventorygenius.entity.StockTransfer;
 import com.example.inventorygenius.repository.StockTransferRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +30,11 @@ public class StockTransferService {
         return stockTransferRepository.save(stockTransfer);
     }
 
-    // Delete a stock transfer by ID
     public void deleteStockTransfer(Long id) {
         stockTransferRepository.deleteById(id);
+    }
+
+    public List<StockTransfer> getStockTransferByUser(String email){
+        return stockTransferRepository.findByUserEmail(email);
     }
 }

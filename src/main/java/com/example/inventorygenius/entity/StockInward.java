@@ -1,18 +1,14 @@
 package com.example.inventorygenius.entity;
 
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -34,6 +30,10 @@ public class StockInward {
     @Column(name = "qty")
     private String qty;
 
+    @ManyToOne()
+    @JoinColumn(name = "location_id")  // This is the foreign key column
+    private Location location;  // Many StockInward records can be associated with one Location
+
     @ManyToOne
     @JoinColumn(name = "item_id")
     private Item item;
@@ -42,15 +42,18 @@ public class StockInward {
     @JoinColumn(name = "stock_id")
     private Stock stock;
 
-    public StockInward() {
+    @Column (name = "user-email")
+    private String userEmail;
 
-    }
+    public StockInward() {}
 
-    public StockInward(Long stockInwardId, LocalDate date, String skucode, String qty) {
+    public StockInward(Long stockInwardId, LocalDate date, String skucode, String qty, Location location, String userEmail) {
         this.stockInwardId = stockInwardId;
         this.date = date;
         this.skucode = skucode;
         this.qty = qty;
+        this.location = location;
+        this.userEmail = userEmail;
     }
 
     public Long getStockInwardId() {
@@ -77,14 +80,6 @@ public class StockInward {
         this.skucode = skucode;
     }
 
-    public Item getItem() {
-        return item;
-    }
-
-    public void setItem(Item item) {
-        this.item = item;
-    }
-
     public String getQty() {
         return qty;
     }
@@ -93,12 +88,36 @@ public class StockInward {
         this.qty = qty;
     }
 
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void setItem(Item item) {
+        this.item = item;
+    }
+
     public Stock getStock() {
         return stock;
     }
 
     public void setStock(Stock stock) {
         this.stock = stock;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
 }

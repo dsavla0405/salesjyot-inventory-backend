@@ -1,5 +1,6 @@
 package com.example.inventorygenius.entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -37,15 +38,19 @@ public class ComboItem {
 
     private int quantityRequired;
 
+    @Column (name = "user-email")
+    private String userEmail;
+
     // Constructors, getters, and setters
     public ComboItem() {}
 
-    public ComboItem(Long comboItemId, Combo combo, Item item, int quantity, int quantityRequired) {
+    public ComboItem(Long comboItemId, Combo combo, Item item, int quantity, int quantityRequired, String userEmail) {
         this.comboItemId = comboItemId;
         this.combo = combo;
         this.item = item;
         this.quantity = quantity;
         this.quantityRequired = quantityRequired;
+        this.userEmail = userEmail;
     }
 
     public Long getComboItemId() {
@@ -94,6 +99,14 @@ public class ComboItem {
 
     public void setQuantityRequired(int quantityRequired) {
         this.quantityRequired = quantityRequired;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
 }

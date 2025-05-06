@@ -1,6 +1,7 @@
 package com.example.inventorygenius.controller;
 
 import com.example.inventorygenius.entity.StockCount;
+import com.example.inventorygenius.entity.StockInward;
 import com.example.inventorygenius.service.StockCountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -48,21 +49,26 @@ public class StockCountController {
     }
 
     @GetMapping("/search/skucode/{skucode}")
-    public ResponseEntity<StockCount> getStockCountBySKUCode(@PathVariable String skucode) {
-        StockCount stockCount = stockCountService.getStockCountBySKUCode(skucode);
+    public ResponseEntity<StockCount> getStockCountBySKUCode(@PathVariable String skucode, @RequestParam String email) {
+        StockCount stockCount = stockCountService.getStockCountBySKUCode(skucode, email);
         return stockCount != null
                 ? new ResponseEntity<>(stockCount, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/items")
-    public List<StockCount> getStockCountsForItems() {
-        return stockCountService.getStockCountsByItem();
+    public List<StockCount> getStockCountsForItems(@RequestParam String email) {
+        return stockCountService.getStockCountsByItem(email);
     }
 
     @GetMapping("/combos")
-    public List<StockCount> getStockCountsForCombos() {
-        return stockCountService.getStockCountsByCombo();
+    public List<StockCount> getStockCountsForCombos(@RequestParam String email) {
+        return stockCountService.getStockCountsByCombo(email);
+    }
+
+    @GetMapping("/user/email")
+    public List<StockCount> getStockCountsByUser(@RequestParam String email) {
+        return stockCountService.getStockCountByUser(email);
     }
 
 }

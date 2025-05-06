@@ -29,12 +29,16 @@ public class PickList {
     @OneToMany()
     private List<Order> orders = new ArrayList<>();
 
+    @Column (name = "user-email")
+    private String userEmail;
+
     public PickList () {
 
     }
 
-    public PickList(Long picklistId) {
+    public PickList(Long picklistId, String userEmail) {
         this.picklistId = picklistId;
+        this.userEmail = userEmail;
     }
 
     public Long getPicklistId() {
@@ -59,6 +63,14 @@ public class PickList {
 
     public void setPickListNumber(Long pickListNumber) {
         this.pickListNumber = pickListNumber;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
     
 }

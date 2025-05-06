@@ -44,10 +44,14 @@ public class ItemPortalMappingService {
         return itemportalmappingRepository.save(ipm);
     }
 
-    public ItemPortalMapping getItemPortalMappings(String portal, String portalSkuCode) {
+    public ItemPortalMapping getItemPortalMappings(String portal, String portalSkuCode, String email) {
         System.out.println(portalSkuCode);
-        System.out.println("sku in ipm = " + itemportalmappingRepository.findByPortalAndPortalSkuCode(portal, portalSkuCode).getSkucode());
-        return itemportalmappingRepository.findByPortalAndPortalSkuCode(
-            portal, portalSkuCode);
+        System.out.println("sku in ipm = " + itemportalmappingRepository.findByPortalAndPortalSkuCodeAndUserEmail(portal, portalSkuCode, email).getSkucode());
+        return itemportalmappingRepository.findByPortalAndPortalSkuCodeAndUserEmail(
+            portal, portalSkuCode, email);
+    }
+
+    public List<ItemPortalMapping> gItemPortalMappingsByUser(String email) {
+        return itemportalmappingRepository.findByUserEmail(email);
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.inventorygenius.entity.Item;
+import com.example.inventorygenius.entity.Location;
 import com.example.inventorygenius.entity.Order;
 import com.example.inventorygenius.entity.PackingList;
 import com.example.inventorygenius.entity.PickList;
@@ -29,18 +30,10 @@ public class OrderService {
     @Autowired
     private StockService stockService;
 
-    // @Autowired
-    // private PickListService pickListService;
-
-    // @Autowired
-    // private PackingListService packListService;
-
-    // Method to add a new item
     public Order addOrder(Order order) {
-    // Create new Item entities within the transaction
     List<Item> newItems = new ArrayList<>();
     for (Item item : order.getItems()) {
-        if (item.getItemId() == null) { // Check if item is new
+        if (item.getItemId() == null) { 
             newItems.add(item);
         }
         if (order.getCancel() == null || order.getCancel().equals("")) {
@@ -57,11 +50,9 @@ public class OrderService {
         order.setShipByDate(LocalDate.now());
     }
 
-    // Now you can safely persist the Order entity
     return orderRepository.save(order);
 }
 
-    // Method to get all items
     public List<Order> getAllOrders() {
         return orderRepository.findAll();
     }
@@ -79,7 +70,7 @@ public class OrderService {
         stock.setAddQty(String.valueOf(order.getQty()));
         stock.setSubQty("0");
         stock.setItem(order.getItems().get(0));
-
+        stock.setLocation(order.getLocation());
         stock.setSource("order");
         stock.setMessage("order deleted");
         stock.setNumber("order no = " + String.valueOf(order.getOrderNo()));
@@ -118,8 +109,8 @@ public class OrderService {
         }
     }
 
-    public List<Order> findByOrderNo(String orderNo) {
-        return orderRepository.findByOrderNo(orderNo);
+    public List<Order> findByOrderNo(String orderNo, String email) {
+        return orderRepository.findByOrderNoAndUserEmail(orderNo, email);
     }
 
     public List<Order> findNotDispatchedOrders(){
@@ -134,8 +125,8 @@ public class OrderService {
         return notDispatchedOrders;
     }
     
-    public List<Order> findNotPackedOrders(){
-        List<Order> orders = getAllOrders();
+    public List<Order> findNotPackedOrders(String email){
+        List<Order> orders = getOrdersByUser(email);
         List<Order> notPackedOrders = new ArrayList<>();
 
         for (Order o : orders) {
@@ -148,5 +139,13 @@ public class OrderService {
 
     public List<Order> findByAwbNo(String AwbNo){
         return orderRepository.findByAwbNo(AwbNo);
+    }
+
+    public List<Order> findOrdersByLocation(Location location, String email){
+        return orderRepository.findByLocationAndUserEmail(location, email);
+    }
+
+    public List<Order> getOrdersByUser(String email){
+        return orderRepository.findByUserEmail(email);
     }
 }

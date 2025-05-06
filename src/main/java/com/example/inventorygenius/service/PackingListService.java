@@ -1,21 +1,15 @@
 package com.example.inventorygenius.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import com.example.inventorygenius.entity.PackingList;
 import com.example.inventorygenius.entity.Order;
+import com.example.inventorygenius.entity.PackingList;
 import com.example.inventorygenius.entity.PickList;
-import com.example.inventorygenius.entity.OrderData;
-import com.example.inventorygenius.entity.PickListData;
-import com.example.inventorygenius.service.OrderService;
-
 import com.example.inventorygenius.repository.PackingListRepository;
 
 @Service
@@ -30,8 +24,8 @@ public class PackingListService {
     @Autowired
     private PickListService pickListService;
 
-    public List<PackingList> getAllPickLists() {
-        return packingListRepository.findAll();
+    public List<PackingList> getAllPickListsByUser(String email) {
+        return packingListRepository.findByUserEmail(email);
     }
 
     public Optional<PackingList> getPickListById(Long id) {
@@ -61,10 +55,10 @@ public class PackingListService {
         }
     }
 
-    public List<Order> getAllNotGeneratedPackListOrders() {
+    public List<Order> getAllNotGeneratedPackListOrders(String email) {
         List<Order> notGeneratedOrders = new ArrayList<>();
-        List<PickList> allPickListOrders = pickListService.getAllPickLists();
-        List<PackingList> allPackingListOrders = getAllPickLists(); // Assuming this method exists
+        List<PickList> allPickListOrders = pickListService.getPickListsByUser(email);
+        List<PackingList> allPackingListOrders = getAllPickListsByUser(email); // Assuming this method exists
         List<Order> packingListOrders = new ArrayList<>();
         for (PackingList pk : allPackingListOrders){
             for(Order oo : pk.getOrders()){

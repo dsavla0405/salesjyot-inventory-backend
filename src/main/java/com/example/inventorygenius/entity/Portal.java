@@ -27,13 +27,17 @@ public class Portal {
     @Column(name = "portal_name")
     private String portal_name;
 
+    @Column (name = "user-email")
+    private String userEmail;
+
     public Portal() {
 
     }
     
-    public Portal(Long portalId, String portal_name){
+    public Portal(Long portalId, String portal_name, String userEmail){
         this.portalId = portalId;
         this.portal_name = portal_name;
+        this.userEmail = userEmail;
     }
 
     public Long getPortalId() {
@@ -51,8 +55,21 @@ public class Portal {
     public void setPortalName(String portal_name) {
         this.portal_name = portal_name;
     }
-   
 
-  
+    public String getPortal_name() {
+        return portal_name;
+    }
+
+    public void setPortal_name(String portal_name) {
+        this.portal_name = portal_name;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
 
 }

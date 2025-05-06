@@ -8,6 +8,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+
 
 @RestController
 @RequestMapping("/api/locations")
@@ -48,4 +52,16 @@ public class LocationController {
         locationService.deleteLocation(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/name/{locationName}")
+    public Location getLocationByName(@PathVariable String locationName, @RequestParam String email) {
+        Location location = locationService.findByName(locationName, email);
+        return location;
+    }
+
+    @GetMapping("/user/email")
+    public List<Location> getLocationsByUser(@RequestParam String email) {
+        return locationService.getLocationByUser(email);
+    }
+    
 }

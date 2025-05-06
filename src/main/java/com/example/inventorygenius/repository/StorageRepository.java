@@ -5,11 +5,13 @@ import org.springframework.stereotype.Repository;
 
 import com.example.inventorygenius.entity.Stock;
 import com.example.inventorygenius.entity.Storage;
+import java.util.List;
+
 
 @Repository
 public interface StorageRepository extends JpaRepository<Storage, Long> {
     Storage findBySkucode(String skucode);
     Storage findByBinNumberAndRackNumberAndSkucode(String binNumber, String rackNumber, String skucode);
     boolean existsByItems_SKUCode(String skucode);
-
+    List<Storage> findByUserEmail(String userEmail);
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.inventorygenius.entity.Bom;
 import com.example.inventorygenius.entity.Item;
+import com.example.inventorygenius.entity.Location;
 import com.example.inventorygenius.entity.Order;
 import com.example.inventorygenius.entity.BomItem;
 import com.example.inventorygenius.entity.Stock;
@@ -24,10 +25,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-
-
-
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/orders")
 public class OrderController {
 
@@ -118,7 +117,7 @@ public ResponseEntity<Order> updateOrder(@PathVariable Long orderId, @RequestBod
                             s.setSource("Order");
                             s.setMessage("Order Cancelled");
                             s.setNumber("Order Number = " + String.valueOf(updatedOrder.getOrderNo()));
-
+                            s.setLocation(updatedOrder.getLocation());
                             System.out.println("Adding stock for BOM item: " + s);
                             stockService.addStock(s);
                         }
@@ -129,6 +128,7 @@ public ResponseEntity<Order> updateOrder(@PathVariable Long orderId, @RequestBod
                 stock.setSource("Order");
                 stock.setMessage("Order Cancelled");
                 stock.setNumber("Order Number = " + String.valueOf(updatedOrder.getOrderNo()));
+                stock.setLocation(updatedOrder.getLocation());
             } else {
                 stock.setDate(LocalDate.now());
                 stock.setSkucode(updatedOrder.getItems().get(0).getSKUCode());
@@ -136,6 +136,7 @@ public ResponseEntity<Order> updateOrder(@PathVariable Long orderId, @RequestBod
                 stock.setAddQty(String.valueOf(updatedOrder.getQty()));
                 stock.setItem(updatedOrder.getItems().get(0));
                 stock.setSource("Order");
+                stock.setLocation(updatedOrder.getLocation());
                 stock.setMessage("Order Cancelled");
                 stock.setNumber("Order Number = " + String.valueOf(updatedOrder.getOrderNo()));
             }
@@ -148,10 +149,10 @@ public ResponseEntity<Order> updateOrder(@PathVariable Long orderId, @RequestBod
                 for (Bom b : updatedOrder.getItems().get(0).getBoms()) {
                     for (BomItem bomItem : b.getItemsInBom()) {
                         if (bomItem.getItem().getSKUCode().equals(updatedOrder.getItems().get(0).getParentSKU())) {
-                            sc = stockCountService.getStockCountBySKUCode(updatedOrder.getItems().get(0).getParentSKU());
+                            sc = stockCountService.getStockCountBySKUCode(updatedOrder.getItems().get(0).getParentSKU(), updatedOrder.getUserEmail());
                             sc.setCount(sc.getCount() + updatedOrder.getQty() * Double.parseDouble(bomItem.getQty()));
                         } else {
-                            StockCount scBom = stockCountService.getStockCountBySKUCode(bomItem.getItem().getSKUCode());
+                            StockCount scBom = stockCountService.getStockCountBySKUCode(bomItem.getItem().getSKUCode(), updatedOrder.getUserEmail());
                             scBom.setCount(scBom.getCount() + updatedOrder.getQty() * Double.parseDouble(bomItem.getQty()));
                             System.out.println("Updating stock count for BOM item: " + scBom);
                             stockCountService.updateStockCount(scBom);
@@ -159,7 +160,7 @@ public ResponseEntity<Order> updateOrder(@PathVariable Long orderId, @RequestBod
                     }
                 }
             } else {
-                sc = stockCountService.getStockCountBySKUCode(updatedOrder.getItems().get(0).getSKUCode());
+                sc = stockCountService.getStockCountBySKUCode(updatedOrder.getItems().get(0).getSKUCode(), updatedOrder.getUserEmail());
                 sc.setCount(sc.getCount() + updatedOrder.getQty());
             }
             System.out.println("Updating stock count1: " + sc);
@@ -194,6 +195,7 @@ public ResponseEntity<Order> updateOrder(@PathVariable Long orderId, @RequestBod
                             s.setSubQty(String.valueOf(updatedOrder.getQty() * Double.parseDouble(bomItem.getQty())));
                             s.setSkucode(bomItem.getBomItem());
                             s.setSource("Order");
+                            s.setLocation(updatedOrder.getLocation());
                             s.setMessage("Order Not Cancelled");
                             s.setNumber("Order Number = " + String.valueOf(updatedOrder.getOrderNo()));
 
@@ -205,6 +207,7 @@ public ResponseEntity<Order> updateOrder(@PathVariable Long orderId, @RequestBod
 
                 stock.setItem(updatedOrder.getItems().get(0));
                 stock.setSource("Order");
+                stock.setLocation(updatedOrder.getLocation());
                 stock.setMessage("Order Not Cancelled");
                 stock.setNumber("Order Number = " + String.valueOf(updatedOrder.getOrderNo()));
             } else {
@@ -214,6 +217,7 @@ public ResponseEntity<Order> updateOrder(@PathVariable Long orderId, @RequestBod
                 stock.setSubQty(String.valueOf(updatedOrder.getQty()));
                 stock.setItem(updatedOrder.getItems().get(0));
                 stock.setSource("Order");
+                stock.setLocation(updatedOrder.getLocation());
                 stock.setMessage("Order Not Cancelled");
                 stock.setNumber("Order Number = " + String.valueOf(updatedOrder.getOrderNo()));
             }
@@ -347,8 +351,8 @@ public ResponseEntity<Order> updateOrder(@PathVariable Long orderId, @RequestBod
     }
 
     @GetMapping("notPacked")
-    public List<Order> getNotPackedOrders() {
-        return orderService.findNotPackedOrders();
+    public List<Order> getNotPackedOrders(@RequestParam String email) {
+        return orderService.findNotPackedOrders(email);
     }
     
     @GetMapping("/findByAwbNo")
@@ -358,8 +362,8 @@ public ResponseEntity<Order> updateOrder(@PathVariable Long orderId, @RequestBod
     }
 
     @PutMapping("/dispatchByAwbNo")
-    public String dispatchOrdersByAwbNo(@RequestParam String orderNo) {
-        List<Order> ordersToUpdate = orderRepository.findByOrderNo(orderNo);
+    public String dispatchOrdersByAwbNo(@RequestParam String orderNo, @RequestParam String email) {
+        List<Order> ordersToUpdate = orderRepository.findByOrderNoAndUserEmail(orderNo, email);
         
         // Update status for each order
         for (Order order : ordersToUpdate) {
@@ -371,8 +375,8 @@ public ResponseEntity<Order> updateOrder(@PathVariable Long orderId, @RequestBod
     }
 
     @PutMapping("/packByAwbNo")
-    public String packOrdersByAwbNo(@RequestParam String orderNo) {
-        List<Order> ordersToUpdate = orderRepository.findByOrderNo(orderNo);
+    public String packOrdersByAwbNo(@RequestParam String orderNo, @RequestParam String email) {
+        List<Order> ordersToUpdate = orderRepository.findByOrderNoAndUserEmail(orderNo, email);
         
         // Update status for each order
         for (Order order : ordersToUpdate) {
@@ -381,6 +385,11 @@ public ResponseEntity<Order> updateOrder(@PathVariable Long orderId, @RequestBod
         }
 
         return "Orders with Order No. " + orderNo + " packed successfully";
+    }
+
+    @GetMapping("/user/email")
+    public List<Order> getOrdersByUser(@RequestParam String email) {
+        return orderService.getOrdersByUser(email);
     }
 
 }

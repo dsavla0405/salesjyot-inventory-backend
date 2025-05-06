@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.inventorygenius.entity.Item;
 import com.example.inventorygenius.entity.Return;
+import com.example.inventorygenius.entity.StockCount;
 import com.example.inventorygenius.entity.Storage;
 import com.example.inventorygenius.repository.ReturnRepository;
 import com.example.inventorygenius.repository.StockRepository;
@@ -48,6 +49,10 @@ public class ReturnService {
                 stock.setSentForRaisingTicketOn(stockDetails.getSentForRaisingTicketOn());
 
         return returnRepository.save(stock);
+    }
+
+    public List<Return> getReturnsByUser(String email){
+        return returnRepository.findByUserEmail(email);
     }
 
 }

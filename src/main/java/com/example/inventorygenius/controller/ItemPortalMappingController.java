@@ -18,6 +18,9 @@ import com.example.inventorygenius.service.ItemSupplierService;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 @RestController
@@ -72,12 +75,16 @@ public class ItemPortalMappingController {
     @GetMapping("/Portal/PortalSku")
     public ItemPortalMapping getItemPortalMappingBuPortalPortalSKU(
         @RequestParam String portal,
-        @RequestParam String portalSKU) {
+        @RequestParam String portalSKU,
+        @RequestParam String email) {
         System.out.println("Fetching ItemPortalMapping for portal:"+portal+" portalSKU:"+portalSKU+".");
-        ItemPortalMapping result = itemService.getItemPortalMappings(portal, portalSKU);
+        ItemPortalMapping result = itemService.getItemPortalMappings(portal, portalSKU, email);
         //System.out.println("result"+result.getPortalSkuCode());
         return result;
     }
 
-    
+    @GetMapping("/user/email")
+    public List<ItemPortalMapping> geItemPortalMappingsByUser(@RequestParam String email) {
+        return itemService.gItemPortalMappingsByUser(email);
+    } 
 }

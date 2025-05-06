@@ -52,15 +52,22 @@ public class Stock {
     @JoinColumn(name = "item_id")
     private Item item;
 
+    @ManyToOne()
+    @JoinColumn(name = "location_id")
+    private Location location;
+
     @OneToOne(mappedBy = "stock", cascade = CascadeType.ALL)
     @JsonIgnore
     private StockInward stockInward;
+
+    @Column (name = "user-email")
+    private String userEmail;
 
     public Stock() {
 
     }
 
-    public Stock(Long stockId, LocalDate date, String skucode, String addQty, String subQty, String source, String message, String number) {
+    public Stock(Long stockId, LocalDate date, String skucode, String addQty, String subQty, String source, String message, String number, Location location, String userEmail) {
         this.stockId = stockId;
         this.date = date;
         this.skucode = skucode;
@@ -69,6 +76,8 @@ public class Stock {
         this.source = source;
         this.message = message;
         this.number = number;
+        this.location = location;
+        this.userEmail = userEmail;
     }
 
     public Long getStockId() {
@@ -149,6 +158,22 @@ public class Stock {
 
     public void setNumber(String number) {
         this.number = number;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
     }
 
 }

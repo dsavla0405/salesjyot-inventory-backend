@@ -46,18 +46,22 @@ public class ItemPortalMapping {
     @JsonIgnore
     private List<Order> orders;
 
+    @Column (name = "user-email")
+    private String userEmail;
+
     public ItemPortalMapping() {
 
     }
 
     public ItemPortalMapping(Long id, String portal, String skucode, String portalSkuCode,
-            Item item, Supplier supplier) {
+            Item item, Supplier supplier, String userEmail) {
         this.id = id;
         this.portal = portal;
         this.skucode = skucode;
         this.portalSkuCode = portalSkuCode;
         this.item = item;
         this.supplier = supplier;
+        this.userEmail = userEmail;
     }
 
     public Long getId() {
@@ -115,6 +119,14 @@ public class ItemPortalMapping {
 
     public void setOrders(List<Order> orders) {
         this.orders = orders;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
 }

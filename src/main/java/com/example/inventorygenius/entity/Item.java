@@ -150,13 +150,16 @@ public class Item {
     @JsonIgnore
     private List<Combo> combos = new ArrayList<>();
 
+    @Column (name = "user-email")
+    private String userEmail;
+
     public Item() {
 
     }
 
     public Item(Long itemId, String sKUCode, String description, String packOf, String parentSKU, String group1,
             String group2, String group3, String sizeRange, String size, String unit, String barcode,
-            BigDecimal sellingPrice, BigDecimal mrp, String sellerSKUCode, String img) {
+            BigDecimal sellingPrice, BigDecimal mrp, String sellerSKUCode, String img, String userEmail) {
         this.itemId = itemId;
         this.SKUCode = sKUCode;
         this.description = description;
@@ -173,6 +176,7 @@ public class Item {
         this.mrp = mrp;
         this.sellerSKUCode = sellerSKUCode;
         this.img = img;
+        this.userEmail = userEmail;
     }
 
     public Long getItemId() {
@@ -439,6 +443,14 @@ public String toString() {
 
     public void setCombos(List<Combo> combos) {
         this.combos = combos;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
 }
