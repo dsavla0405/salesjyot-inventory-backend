@@ -38,13 +38,29 @@ public class Location {
     @OneToMany(mappedBy = "toLocation")
     private List<StockTransfer> stockTransfersTo;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "location")
+    private List<Order> orders;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "location") // Ensures that Location is the "one" side of the relationship
+    private List<StockInward> stockInwards;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "location")
+    private List<Storage> storages;
+
+    @Column (name = "user-email")
+    private String userEmail;
+
     public Location(){
 
     }
 
-    public Location(Long locationId, String locationName) {
+    public Location(Long locationId, String locationName, String userEmail) {
         this.locationId = locationId;
         this.locationName = locationName;
+        this.userEmail = userEmail;
     }
 
     public Long getLocationId() {
@@ -77,6 +93,38 @@ public class Location {
 
     public void setStockTransfersTo(List<StockTransfer> stockTransfersTo) {
         this.stockTransfersTo = stockTransfersTo;
+    }
+
+    public List<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(List<Order> orders) {
+        this.orders = orders;
+    }
+
+    public List<StockInward> getStockInwards() {
+        return stockInwards;
+    }
+
+    public void setStockInwards(List<StockInward> stockInwards) {
+        this.stockInwards = stockInwards;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public List<Storage> getStorages() {
+        return storages;
+    }
+
+    public void setStorages(List<Storage> storages) {
+        this.storages = storages;
     }
 
 }

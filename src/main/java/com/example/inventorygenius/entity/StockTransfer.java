@@ -36,14 +36,18 @@ public class StockTransfer {
     @Column(name = "qty")
     private Double qty;
 
+    @Column (name = "user-email")
+    private String userEmail;
+
     public StockTransfer() {
 
     }
 
-    public StockTransfer(Long stockTransferId, Location fromLocation, Location toLocation) {
+    public StockTransfer(Long stockTransferId, Location fromLocation, Location toLocation, String userEmail) {
         this.stockTransferId = stockTransferId;
         this.fromLocation = fromLocation;
         this.toLocation = toLocation;
+        this.userEmail = userEmail;
     }
 
     public Long getStockTransferId() {
@@ -84,6 +88,14 @@ public class StockTransfer {
 
     public void setQty(Double qty) {
         this.qty = qty;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
     
 }

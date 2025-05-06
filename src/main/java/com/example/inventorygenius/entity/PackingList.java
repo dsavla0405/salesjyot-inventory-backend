@@ -29,13 +29,16 @@ public class PackingList {
     @OneToMany()
     private List<Order> orders = new ArrayList<>();
 
+    @Column (name = "user-email")
+    private String userEmail;
+
     public PackingList () {
 
     }
 
-    public PackingList(Long packinglistId) {
+    public PackingList(Long packinglistId, String userEmail) {
         this.packinglistId = packinglistId;
-        
+        this.userEmail = userEmail;
     }
 
     public Long getPackinglistId() {
@@ -61,6 +64,14 @@ public class PackingList {
 
     public void setPackingListNumber(Long packingListNumber) {
         this.packingListNumber = packingListNumber;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
     
 }

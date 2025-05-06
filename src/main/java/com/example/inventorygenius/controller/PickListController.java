@@ -17,6 +17,7 @@ import java.util.Optional;
 import com.example.inventorygenius.Exception.CustomStockException;
 import com.example.inventorygenius.entity.Bom;
 import com.example.inventorygenius.entity.Item;
+import com.example.inventorygenius.entity.Location;
 import com.example.inventorygenius.entity.Order;
 import com.example.inventorygenius.entity.OrderData;
 import com.example.inventorygenius.entity.PickList;
@@ -77,14 +78,21 @@ public class PickListController {
     @Autowired 
     private PickListDataService pickListDataService;
 
-    @GetMapping("/not/generated/orders")
-    public List<Order> getNotGeneratedOrders() {
-        return pickListService.getAllNotGeneratedOrders();
-    } 
+    @PostMapping("/not/generated/orders") // Changed to POST as we are sending data in the request body
+    public List<Order> getNotGeneratedOrders(@RequestBody Location location) {
+        return pickListService.getAllNotGeneratedOrders(location, location.getUserEmail());
+    }
+
 
     @GetMapping
     public ResponseEntity<List<PickList>> getAllPickLists() {
         List<PickList> pickLists = pickListService.getAllPickLists();
+        return ResponseEntity.ok(pickLists);
+    }
+
+    @GetMapping("/user/email")
+    public ResponseEntity<List<PickList>> getAllPickLists(@RequestParam String email) {
+        List<PickList> pickLists = pickListService.getPickListsByUser(email);
         return ResponseEntity.ok(pickLists);
     }
 
@@ -106,7 +114,7 @@ public ResponseEntity<PickList> createPickList(@RequestBody PickList pickList) {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public ResponseEntity<Void> deletePickList(@PathVariable Long id) {
+    public ResponseEntity<Void> deletePickList(@PathVariable Long id, @RequestParam String email) {
 
         Optional<PickList> pickListOptional = pickListRepository.findById(id);
 
@@ -118,14 +126,14 @@ public ResponseEntity<PickList> createPickList(@RequestBody PickList pickList) {
     }
 
     @GetMapping("/orderData")
-    public List<OrderData> getOrdersData() {
-        return pickListService.getOrderDatas();
+    public List<OrderData> getOrdersData(@RequestParam String email) {
+        return pickListService.getOrderDatas(email);
     }
 
 
     @GetMapping("/getData")
-    public List<PickListData> getData() {
-        return pickListService.getData();
+    public List<PickListData> getData(@RequestParam String email) {
+        return pickListService.getData(email);
     }
     
     public boolean isCurrentDateBetween(Bom bom) {
@@ -157,23 +165,22 @@ public ResponseEntity<PickList> createPickList(@RequestBody PickList pickList) {
     
 
     @GetMapping("/getSelectedOrderData")
-    public List<OrderData> getMethodName(@RequestParam String orderNo, @RequestParam String bomCode) {
+    public List<OrderData> getMethodName(@RequestParam String orderNo, @RequestParam String bomCode, @RequestParam String email) {
        String bomC = "";
-        List<Order> orders = orderService.findByOrderNo(orderNo);
+        List<Order> orders = orderService.findByOrderNo(orderNo, email);
        for(Order order : orders){
             for(Item item : order.getItems()){
                 for (Bom bom : item.getBoms()){
                     if (item.getBoms().size() > 0 && bomCode.equals("")){
+                        System.out.println("in 1");
                         throw new IllegalArgumentException("Select a bomCode");
                     }
-                    if(item.getBoms().size() > 0){
-                        
-                        
-                       
-                            bomC = bomCode;
-                        
+                    if(item.getBoms().size() > 0){ 
+                        System.out.println("in 2");
+                            bomC = bomCode;    
                     }
                     if (item.getBoms().size() == 0) {
+                        System.out.println("in 3");
                         bomC = "";
                     }
                     
@@ -183,13 +190,13 @@ public ResponseEntity<PickList> createPickList(@RequestBody PickList pickList) {
        System.out.println("bom in picklist merge rows = " + bomC);
        List<OrderData> oo = new ArrayList<>();
        if(bomC.length() > 0){
-        Bom bom = bomService.getBomByBomCode(bomC);
+        Bom bom = bomService.getBomByBomCode(bomC, email);
         System.out.println("calling orderData with bom");
         oo = pickListService.getOrderData(bom);
        }
        else {
         System.out.println("calling orderDatas");
-        oo = pickListService.getOrderDatas();
+        oo = pickListService.getOrderDatas(email);
        }
         List<OrderData> orderDataList = new ArrayList<>();
         for (OrderData o : oo){
@@ -202,8 +209,8 @@ public ResponseEntity<PickList> createPickList(@RequestBody PickList pickList) {
 
 
     @GetMapping("/merged/picklist")
-    public List<PickListData> mergedPickListDatas() {
-        List<PickListData> allPickListDatas = pickListDataService.getAllPickListData();
+    public List<PickListData> mergedPickListDatas(@RequestParam String email) {
+        List<PickListData> allPickListDatas = pickListDataService.getAllPickListData(email);
         List<PickListData> mergedPickListData = new ArrayList<>();
     
         // Map to store PickListData grouped by picklistNumber
@@ -216,12 +223,9 @@ public ResponseEntity<PickList> createPickList(@RequestBody PickList pickList) {
                 .add(p);
         }
     
-        // Iterate over groups
         for (List<PickListData> group : groupedByPicklistNumber.values()) {
-            // Map to store aggregated qty and pickQty by sellerSKU
             Map<String, PickListData> aggregatedDataBySellerSKU = new HashMap<>();
     
-            // Aggregate qty and pickQty for each sellerSKU within the group
             for (PickListData p : group) {
                 String sellerSKU = p.getItem().getSellerSKUCode();
                 double qty = p.getQty();
@@ -237,7 +241,6 @@ public ResponseEntity<PickList> createPickList(@RequestBody PickList pickList) {
                     existingData.setQty(existingData.getQty() + qty);
                     existingData.setPickQty(existingData.getPickQty() + pickQty);
                 } else {
-                    // Create a new PickListData if sellerSKU not found
                     PickListData newData = new PickListData();
                     newData.setPickListNumber(p.getPickListNumber());
                     newData.setSellerSKU(sellerSKU);
@@ -252,7 +255,6 @@ public ResponseEntity<PickList> createPickList(@RequestBody PickList pickList) {
                 }
             }
     
-            // Add aggregated data to mergedPickListData
             mergedPickListData.addAll(aggregatedDataBySellerSKU.values());
         }
     
@@ -260,22 +262,23 @@ public ResponseEntity<PickList> createPickList(@RequestBody PickList pickList) {
     }   
     
     @GetMapping("/boms/{orderNo}")
-    public List<Bom> getBomWithOrderNo(@PathVariable String orderNo){
-        return pickListService.getOrdersWithBom(orderNo);
+    public List<Bom> getBomWithOrderNo(@PathVariable String orderNo, @RequestParam String email){
+        return pickListService.getOrdersWithBom(orderNo, email);
     }
 
     @GetMapping("/bom/default/bomCode")
-    public String getMethodName(@RequestParam String orderNo) {
-        return pickListService.getDefaultBomCode(orderNo);
+    public String getDefaultBom(@RequestParam String orderNo, @RequestParam String email) {
+        return pickListService.getDefaultBomCode(orderNo, email);
     }
 
     @GetMapping("/validate")
     public ResponseEntity<Boolean> validateScannedItem(
             @RequestParam Long picklistNumber, 
             @RequestParam String sku, 
-            @RequestParam Double scannedQty) {
+            @RequestParam Double scannedQty,
+            @RequestParam String email) {
         // Call the validation service and return the result wrapped in ResponseEntity
-        boolean isValid = pickListService.isScannedItemValid(picklistNumber, sku, scannedQty);
+        boolean isValid = pickListService.isScannedItemValid(picklistNumber, sku, scannedQty, email);
         return ResponseEntity.ok(isValid);
     }
 

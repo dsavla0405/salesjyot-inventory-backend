@@ -1,6 +1,7 @@
 package com.example.inventorygenius.service;
 
 import com.example.inventorygenius.entity.StockCount;
+import com.example.inventorygenius.entity.StockInward;
 import com.example.inventorygenius.repository.StockCountRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -38,17 +39,21 @@ public class StockCountService {
         stockCountRepository.deleteById(id);
     }
 
-    public StockCount getStockCountBySKUCode(String skuCode) {
-        return stockCountRepository.findByItem_SKUCode(skuCode);
+    public StockCount getStockCountBySKUCode(String skuCode, String email) {
+        return stockCountRepository.findByItem_SKUCodeAndUserEmail(skuCode, email);
     }
 
     // Fetch stock counts that are linked to Items
-    public List<StockCount> getStockCountsByItem() {
-        return stockCountRepository.findByItemIsNotNull();
+    public List<StockCount> getStockCountsByItem(String email) {
+        return stockCountRepository.findByItemIsNotNullAndUserEmail(email);
     }
 
     // Fetch stock counts that are linked to Combos
-    public List<StockCount> getStockCountsByCombo() {
-        return stockCountRepository.findByComboIsNotNull();
+    public List<StockCount> getStockCountsByCombo(String email) {
+        return stockCountRepository.findByComboIsNotNullAndUserEmail(email);
+    }
+
+    public List<StockCount> getStockCountByUser(String email){
+        return stockCountRepository.findByUserEmail(email);
     }
 }

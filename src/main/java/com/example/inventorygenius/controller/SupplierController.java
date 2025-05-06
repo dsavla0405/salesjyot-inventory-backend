@@ -14,8 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
+
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/supplier")
 public class SupplierController {
 
@@ -40,12 +41,6 @@ public class SupplierController {
         return new ResponseEntity<>(updatedSupplier, HttpStatus.OK);
     }
 
-    // @DeleteMapping("/{id}")
-    // public ResponseEntity<Supplier> deleteSupplier(@PathVariable Long id, @RequestBody Supplier bomDetails) {
-    //     Supplier deletedSupplier = supplierService.deleteSupplierById(id);
-    //     return new ResponseEntity<>(deletedSupplier, HttpStatus.NO_CONTENT);
-    // }
-
     @DeleteMapping("/{id}")
    public void deleteSupplier(@PathVariable("id") Long id) {
     System.out.println("deleted");
@@ -63,14 +58,19 @@ public class SupplierController {
    }
 
    @GetMapping("/name/{supplierName}")
-    public ResponseEntity<Supplier> getSupplierByName(@PathVariable String supplierName) {
-        Supplier supplier = supplierService.getSupplierByName(supplierName);
+    public ResponseEntity<Supplier> getSupplierByName(@PathVariable String supplierName, @RequestParam String email) {
+        Supplier supplier = supplierService.getSupplierByNameAndEmail(supplierName, email);
         if (supplier != null) {
             return new ResponseEntity<>(supplier, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-}
+    }
 
+    @GetMapping("/user/email")
+    public List<Supplier> getSupplierByEmail(@RequestParam String email) {
+        return supplierService.getSupplierByEmail(email);
+    }
    
 }
+

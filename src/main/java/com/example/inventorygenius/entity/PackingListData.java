@@ -26,6 +26,9 @@ public class PackingListData {
     @Column(name = "pack_list_number")
     private Long packListNumber;
 
+    @Column(name = "skucode")
+    private String skucode;
+
     @Column(name = "date")
     private LocalDate date;
 
@@ -61,12 +64,15 @@ public class PackingListData {
     @JoinColumn(name = "order_id")
     private Order order;
 
+    @Column (name = "user-email")
+    private String userEmail;
+
     public PackingListData() {
         
     }
 
     public PackingListData(Long packListId, Long packListNumber, LocalDate date, String portalOrderNo, String orderNo,
-            String bomCode, String portal, String sellerSKU, Double qty, String description, Double packQty) {
+            String bomCode, String portal, String sellerSKU, Double qty, String description, Double packQty, String skucode, String userEmail) {
         this.packListId = packListId;
         this.packListNumber = packListNumber;
         this.date = date;
@@ -78,6 +84,8 @@ public class PackingListData {
         this.qty = qty;
         this.description = description;
         this.packQty = packQty;
+        this.skucode = skucode;
+        this.userEmail = userEmail;
     }
 
     public Long getPackListId() {
@@ -183,5 +191,20 @@ public class PackingListData {
     public void setOrder(Order order) {
         this.order = order;
     }
-    
+
+    public String getSkucode() {
+        return skucode;
+    }
+
+    public void setSkucode(String skucode) {
+        this.skucode = skucode;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
 }

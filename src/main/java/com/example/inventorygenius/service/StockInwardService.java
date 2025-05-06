@@ -41,14 +41,10 @@ public class StockInwardService {
     @Autowired
     private StorageService storageService;
 
-
-    // Method to add a new item
     public StockInward addStockInward(StockInward stockInward) {
-        // Save the StockInward
         return stockInwardRepository.save(stockInward);
     }
 
-    // Method to get all items
     public List<StockInward> getAllStockInward() {
         return stockInwardRepository.findAll();
     }
@@ -67,14 +63,12 @@ public class StockInwardService {
     
         System.out.println("Found StockInward: " + SI);
     
-        // Check if SKU code is present in any storage
         for (Storage storage : storageService.getAllStorage()) {
             if (storage.getSkucode().equals(SI.getItem().getSKUCode())) {
                 throw new IllegalStateException("Cannot delete StockInward because the SKU code is present in Storage.");
             }
         }
     
-        // Create a new Stock object
         Stock stock = new Stock();
         stock.setDate(LocalDate.now());
         stock.setSkucode(SI.getItem().getSKUCode());
@@ -84,13 +78,14 @@ public class StockInwardService {
         stock.setSource("stock inward");
         stock.setMessage("stock inward deleted");
         stock.setNumber("id = " + id);
+        stock.setLocation(SI.getLocation());
     
         System.out.println("Creating new Stock entry: " + stock);
     
         stockService.addStock(stock);
     
         String skuCode = SI.getItem().getSKUCode();
-        StockCount stockCount = stockCountService.getStockCountBySKUCode(skuCode);
+        StockCount stockCount = stockCountService.getStockCountBySKUCode(skuCode, SI.getUserEmail());
         if (stockCount != null) {
             double currentCount = stockCount.getCount();
             double subtractedCount = Double.parseDouble(SI.getQty());
@@ -117,5 +112,9 @@ public class StockInwardService {
         stockInward.setItem(stockInwardDetails.getItem());
 
         return stockInwardRepository.save(stockInward);
+    }
+
+    public List<StockInward> getStockInwardsByUser(String email){
+        return stockInwardRepository.findByUserEmail(email);
     }
 }

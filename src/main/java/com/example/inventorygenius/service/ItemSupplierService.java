@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.inventorygenius.entity.Item;
 import com.example.inventorygenius.entity.Storage;
+import com.example.inventorygenius.entity.Supplier;
 import com.example.inventorygenius.entity.Stock;
 import com.example.inventorygenius.repository.ItemRepository;
 
@@ -36,6 +37,10 @@ public class ItemSupplierService {
     public List<Item> getAllItems(){
         return itemRepository.findAll();
     }
+
+    public List<Item> getItemsByEmail(String email){
+        return itemRepository.findByUserEmail(email);
+    }
     
     public Item getItemBySKUCode(String skuCode) {
         System.out.println("item found in repo = " + itemRepository.findBySKUCode(skuCode));
@@ -49,11 +54,9 @@ public class ItemSupplierService {
             Item existingItem = existingItemOptional.get();
             System.out.println("Existing Item Storages: " + existingItem.getStorages().size());
     
-            // Capture old SKUCode if it changes
             String oldSKUCode = existingItem.getSKUCode();
             String newSKUCode = updatedItem.getSKUCode();
     
-            // Update properties of the existing item with the new values
             existingItem.setDescription(updatedItem.getDescription());
             existingItem.setPackOf(updatedItem.getPackOf());
             existingItem.setParentSKU(updatedItem.getParentSKU());
@@ -90,10 +93,6 @@ public class ItemSupplierService {
     
             Item savedItem = itemRepository.save(existingItem);
             
-            // Flush persistence context to synchronize state
-            //itemRepository.flush();
-    
-            // If SKUCode changes, update dependent items
             if (!oldSKUCode.equals(newSKUCode)) {
                 System.out.println("in the if");
                 updateDependentItems(oldSKUCode, newSKUCode);
@@ -118,7 +117,11 @@ public class ItemSupplierService {
         }
     }
 
-    public Item findItemsBySellerSKUAndDescription(String skucode, String description) {
-        return itemRepository.findBySKUCodeAndDescription(skucode, description);
+    public Item findItemsBySellerSKUAndDescription(String skucode, String description, String email) {
+        return itemRepository.findBySKUCodeAndDescriptionAndUserEmail(skucode, description, email);
+    }
+
+    public List<Item> getItemByEmail(String email){
+        return itemRepository.findByUserEmail(email);
     }
 }

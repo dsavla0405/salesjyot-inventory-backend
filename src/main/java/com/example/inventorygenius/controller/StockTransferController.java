@@ -1,5 +1,6 @@
 package com.example.inventorygenius.controller;
 
+import com.example.inventorygenius.entity.StockInward;
 import com.example.inventorygenius.entity.StockTransfer;
 import com.example.inventorygenius.service.StockTransferService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,5 +64,10 @@ public class StockTransferController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    @GetMapping("/user/email")
+    public List<StockTransfer> getStockTransferByUser(@RequestParam String email) {
+        return stockTransferService.getStockTransferByUser(email);
     }
 }

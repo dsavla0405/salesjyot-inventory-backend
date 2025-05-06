@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -21,6 +22,7 @@ import com.example.inventorygenius.service.ItemSupplierService;
 import com.example.inventorygenius.service.StockCountService;
 
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/item/supplier")
 public class ItemSupplierController {
     @Autowired
@@ -44,30 +47,20 @@ public class ItemSupplierController {
 
     @PostMapping
     public Item saveItemWithExistingSupplier(@RequestBody Item item) {
-        // Check if suppliers list is empty
         if (item.getSuppliers().isEmpty()) {
-            // Handle scenario where no suppliers are provided (e.g., return an error response)
-            // Here, we simply return null to indicate failure
             return itemRepository.save(item);
         }
         
-        // Find the existing supplier by its ID or other unique identifier
         Optional<Supplier> existingSupplier = supplierRepository.findById(item.getSuppliers().get(0).getSupplierId());
     
-        // Ensure the existing supplier is present before setting it on the item
         if (existingSupplier.isPresent()) {
-            // Create a list to hold the existing supplier
             List<Supplier> existingSuppliers = new ArrayList<>();
             existingSuppliers.add(existingSupplier.get());
     
-            // Set the list of existing suppliers on the item
             item.setSuppliers(existingSuppliers);
     
-            // Save the item with associated existing suppliers
             return itemRepository.save(item);
         } else {
-            // Handle scenario where supplier doesn't exist (e.g., return an error response)
-            // Here, we simply return null to indicate failure
             return null;
         }
 
@@ -95,7 +88,6 @@ public class ItemSupplierController {
     }
     
 
-    // Delete an existing item
     @DeleteMapping("/{itemId}")
     public ResponseEntity<Void> deleteItem(@PathVariable Long itemId) {
         Optional<Item> itemOptional = itemRepository.findById(itemId);
@@ -112,57 +104,59 @@ public class ItemSupplierController {
     public Item findItemsBySupplierAndSellerSKUCode(
             @PathVariable("supplierId") Long supplierId,
             @PathVariable("skucode") String skucode) {
-        // Use the ItemRepository to find items based on the supplied parameters
         return itemRepository.findBySuppliers_SupplierIdAndSKUCode(supplierId, skucode);
     }
 
     @GetMapping("/search/{supplierId}")
-public List<String> findSellerSKUCodesBySupplier(
-        @PathVariable("supplierId") Long supplierId) {
-    // Use the ItemRepository to find items based on the supplied supplierId
-    List<Item> items = itemRepository.findBySuppliersSupplierId(supplierId);
-    
-    // Extract sellerSKUCode from the found items and return as a list
-    List<String> sellerSKUCodes = new ArrayList<>();
-    for (Item item : items) {
-        sellerSKUCodes.add(item.getSellerSKUCode());
-    }
-    
-    return sellerSKUCodes;
-}
-
-@GetMapping("/order/search/{skucode}/{description}")
-public Item findItemsBySellerSKUCodeAndDescription(
-        @PathVariable(value = "skucode") String skucode,
-        @PathVariable(value = "description") String description) {
-    // Check if both parameters are provided
-    return itemRepository.findBySKUCodeAndDescription(skucode, description);
-}
-
-@GetMapping("/search/skucode/{skucode}")
-public Item getMethodName(@PathVariable String skucode) {
-    return itemRepository.findBySKUCode(skucode);
-}
-
-@GetMapping("/search/seller/{sellerName}")
-public ResponseEntity<String> findSellerSKUCodesBySellerName(@PathVariable String sellerName) {
-    Supplier supplier = supplierRepository.findBySupplierName(sellerName);
-
-    if (supplier == null) {
-        return ResponseEntity.notFound().build();
+    public List<String> findSellerSKUCodesBySupplier(
+            @PathVariable("supplierId") Long supplierId) {
+        List<Item> items = itemRepository.findBySuppliersSupplierId(supplierId);
+        
+        List<String> sellerSKUCodes = new ArrayList<>();
+        for (Item item : items) {
+            sellerSKUCodes.add(item.getSellerSKUCode());
+        }
+        
+        return sellerSKUCodes;
     }
 
-    StringBuilder sellerSKUCodeBuilder = new StringBuilder();
-
-    List<Item> items = itemRepository.findBySuppliersSupplierId(supplier.getSupplierId());
-
-    for (Item item : items) {
-        sellerSKUCodeBuilder.append(item.getSKUCode()).append(", ");
+    @GetMapping("/order/search/{skucode}/{description}")
+    public Item findItemsBySellerSKUCodeAndDescription(
+            @PathVariable(value = "skucode") String skucode,
+            @PathVariable(value = "description") String description,
+            @RequestParam String email) {
+        return itemRepository.findBySKUCodeAndDescriptionAndUserEmail(skucode, description, email);
     }
 
-    String sellerSKUCode = sellerSKUCodeBuilder.toString().replaceAll(", $", "");
+    @GetMapping("/search/skucode/{skucode}")
+    public Item getMethodName(@PathVariable String skucode, @RequestParam String email) {
+        return itemRepository.findBySKUCodeAndUserEmail(skucode, email);
+    }
 
-    return ResponseEntity.ok(sellerSKUCode);
-}
+    @GetMapping("/search/seller/{sellerName}")
+    public ResponseEntity<String> findSellerSKUCodesBySellerName(@PathVariable String sellerName, @RequestParam String email) {
+        Supplier supplier = supplierRepository.findBySupplierNameAndUserEmail(sellerName, email);
+
+        if (supplier == null) {
+            return ResponseEntity.notFound().build();
+        }
+
+        StringBuilder sellerSKUCodeBuilder = new StringBuilder();
+
+        List<Item> items = itemRepository.findBySuppliersSupplierId(supplier.getSupplierId());
+
+        for (Item item : items) {
+            sellerSKUCodeBuilder.append(item.getSKUCode()).append(", ");
+        }
+
+        String sellerSKUCode = sellerSKUCodeBuilder.toString().replaceAll(", $", "");
+
+        return ResponseEntity.ok(sellerSKUCode);
+    }
+
+    @GetMapping("/user/email")
+    public List<Item> getSupplierByEmail(@RequestParam String email) {
+        return itemSupplierService.getItemsByEmail(email);
+    }
 
 }

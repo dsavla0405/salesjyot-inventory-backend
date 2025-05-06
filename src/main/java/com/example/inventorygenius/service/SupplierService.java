@@ -76,9 +76,12 @@ public Supplier addSupplier(Supplier supplier) {
         return s.getSupplierId();
     }
 
-    public Supplier getSupplierByName(String supplierName) {
-        return supplierRepository.findBySupplierName(supplierName);
+    public Supplier getSupplierByNameAndEmail(String supplierName, String email) {
+        return supplierRepository.findBySupplierNameAndUserEmail(supplierName, email);
     }
     
+    public List<Supplier> getSupplierByEmail(String email){
+        return supplierRepository.findByUserEmail(email);
+    }
 
 }

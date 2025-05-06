@@ -46,9 +46,14 @@ public class BomController {
     }
 
     @GetMapping("/bom/{bomCode}")
-    public ResponseEntity<Bom> getBomBySKUCode(@PathVariable String bomCode) {
-        Bom bom = bomService.getBomByBomCode(bomCode);
+    public ResponseEntity<Bom> getBomBySKUCode(@PathVariable String bomCode, @RequestParam String email) {
+        Bom bom = bomService.getBomByBomCode(bomCode, email);
         return ResponseEntity.ok(bom);
+    }
+
+    @GetMapping("/user/email")
+    public List<Bom> getBomFromUser(@RequestParam String email) {
+        return bomService.getBomByEmail(email);
     }
     
 }

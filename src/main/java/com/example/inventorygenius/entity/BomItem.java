@@ -34,15 +34,19 @@ public class BomItem {
     @JoinColumn(name = "item_id")
     private Item item;
 
+    @Column (name = "user-email")
+    private String userEmail;
+
     public BomItem () {
 
     }
 
-    public BomItem(Long bomItemId, String bomItem, String qty, Bom bom) {
+    public BomItem(Long bomItemId, String bomItem, String qty, Bom bom, String userEmail) {
         this.bomItemId = bomItemId;
         this.bomItem = bomItem;
         this.qty = qty;
         this.bom = bom;
+        this.userEmail = userEmail;
     }
 
     public Long getBomItemId() {
@@ -83,6 +87,14 @@ public class BomItem {
 
     public void setItem(Item item) {
         this.item = item;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
 
 }

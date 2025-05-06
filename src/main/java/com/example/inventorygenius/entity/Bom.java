@@ -59,16 +59,20 @@ public class Bom {
     @JsonIgnore
     private List<ComboItem> comboItems = new ArrayList<>();
 
+    @Column (name = "user-email")
+    private String userEmail;
+
     public Bom() {
 
     }
 
-    public Bom(Long bomId, String sKUCode, Date defaultStartDate, Date defaultEndDate, String bomCode) {
+    public Bom(Long bomId, String sKUCode, Date defaultStartDate, Date defaultEndDate, String bomCode, String userEmail) {
         this.bomId = bomId;
         this.SKUCode = sKUCode;
         this.defaultStartDate = defaultStartDate;
         this.bomCode = bomCode;
         this.defaultEndDate = defaultEndDate;
+        this.userEmail = userEmail;
     }
 
     public Long getBomId() {
@@ -133,6 +137,14 @@ public class Bom {
 
     public void setComboItems(List<ComboItem> comboItems) {
         this.comboItems = comboItems;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
     
 }

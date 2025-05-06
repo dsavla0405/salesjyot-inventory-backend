@@ -10,6 +10,6 @@ import com.example.inventorygenius.entity.PickListData;
 
 @Repository
 public interface PickListDataRepository extends JpaRepository<PickListData, Long> {
-    List<PickListData> findByPickListNumber(Long pickListNumber);
-    
+    List<PickListData> findByPickListNumberAndUserEmail(Long pickListNumber, String email);
+    List<PickListData> findByUserEmail(String userEmail);
 }

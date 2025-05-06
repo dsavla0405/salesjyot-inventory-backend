@@ -9,10 +9,10 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StockCountRepository extends JpaRepository<StockCount, Long> {
-    StockCount findByItem_SKUCode(String skuCode);
-    // Query for stock counts with non-null items
-    List<StockCount> findByItemIsNotNull();
+    StockCount findByItem_SKUCodeAndUserEmail(String skuCode, String email);
+    List<StockCount> findByItemIsNotNullAndUserEmail(String email);
 
-    // Query for stock counts with non-null combos
-    List<StockCount> findByComboIsNotNull();
+    List<StockCount> findByComboIsNotNullAndUserEmail(String email);
+
+    List<StockCount> findByUserEmail(String userEmail);
 }

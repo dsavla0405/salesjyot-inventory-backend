@@ -3,6 +3,8 @@ package com.example.inventorygenius.entity;
 import java.time.LocalDate;
 import java.util.Date;
 
+import jakarta.persistence.Column;
+
 public class OrderData {
     private LocalDate date;
     private String orderNo;
@@ -16,6 +18,7 @@ public class OrderData {
     private String img;
     private String bomCode;
     private String skucode;
+    private String userEmail;
 
     public LocalDate getDate() {
         return date;
@@ -89,6 +92,12 @@ public class OrderData {
     }
     public void setSkucode(String skucode) {
         this.skucode = skucode;
+    }
+    public String getUserEmail() {
+        return userEmail;
+    }
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
     
 }

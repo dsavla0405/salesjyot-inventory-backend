@@ -98,13 +98,20 @@ public class Order {
     @JsonIgnore
     private List<PackingListData> packingListData = new ArrayList<>();
 
+    @ManyToOne()
+    @JoinColumn(name = "location_id") // Foreign key to Location
+    private Location location;
+
+    @Column (name = "user-email")
+    private String userEmail;
+    
     public Order() {
 
     }
 
     public Order(Long orderId, LocalDate Date, String orderNo, String portal, String portalOrderNo, String portalOrderLineId,
             String portalSKU, String skucode, String productDescription, double qty, LocalDate shipByDate, String dispatched,
-            String courier, String cancel, String awbNo, String orderStatus) {
+            String courier, String cancel, String awbNo, String orderStatus, String userEmail) {
         this.orderId = orderId;
         this.orderNo = orderNo;
         this.portal = portal;
@@ -121,6 +128,7 @@ public class Order {
         this.cancel = cancel;
         this.orderStatus = orderStatus;
         this.awbNo = awbNo;
+        this.userEmail = userEmail;
     }
 
     public Long getOrderId() {
@@ -297,6 +305,22 @@ public class Order {
 
     public void setPackingListData(List<PackingListData> packingListData) {
         this.packingListData = packingListData;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
     }
     
 }

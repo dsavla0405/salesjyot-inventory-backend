@@ -8,6 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 @RestController
 @RequestMapping("/bomItems")
@@ -45,4 +48,10 @@ public class BomItemController {
         bomItemService.deleteBomItem(bomItemId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/user/email")
+    public List<BomItem> getBomItemByEmail(@RequestParam String email) {
+        return bomItemService.getBomItemByUser(email);
+    }
+    
 }

@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.inventorygenius.entity.Item;
 import com.example.inventorygenius.entity.Stock;
 import com.example.inventorygenius.entity.StockCount;
+import com.example.inventorygenius.entity.StockInward;
 import com.example.inventorygenius.entity.Storage;
 import com.example.inventorygenius.repository.StockRepository;
 import com.example.inventorygenius.service.StockCountService;
@@ -49,7 +50,7 @@ public class StockService {
         
         if (stockOptional.isPresent()) {
             Stock stock = stockOptional.get();
-            StockCount sc = stockCountService.getStockCountBySKUCode(stock.getSkucode());
+            StockCount sc = stockCountService.getStockCountBySKUCode(stock.getSkucode(), stock.getUserEmail());
             Double prevCount = sc.getCount();
     
             if (Double.parseDouble(stock.getAddQty()) > 0) {
@@ -74,6 +75,7 @@ public class StockService {
                 stock.setAddQty(stockDetails.getAddQty());
                 stock.setSubQty(stockDetails.getSubQty());
                 stock.setSkucode(stockDetails.getSkucode());
+                stock.setLocation(stockDetails.getLocation());
 
 
         return stockRepository.save(stock);
@@ -91,10 +93,9 @@ public class StockService {
     public Map<String, Double> printGroupedStocksAndCalculateCounts() {
         Map<String, List<Stock>> groupedStocks = groupStocksBySkucode(getAllStock());
         Map<String, Double> skucodeCounts = new HashMap<>();
-
+        String email = getAllStock().get(0).getUserEmail();
         groupedStocks.forEach((skucode, stockList) -> {
             double countChange = 0.0;
-
             for (Stock stock : stockList) {
                 if (Double.parseDouble(stock.getAddQty()) > 0) {
                     countChange += Double.parseDouble(stock.getAddQty());
@@ -112,7 +113,7 @@ public class StockService {
 
         // Update StockCount based on skucodeCounts
         skucodeCounts.forEach((skucode, countChange) -> {
-            StockCount stockCount = stockCountService.getStockCountBySKUCode(skucode);
+            StockCount stockCount = stockCountService.getStockCountBySKUCode(skucode, email);
             if (stockCount != null) {
                 stockCount.setCount(countChange);
                 stockCountService.updateStockCount(stockCount);
@@ -123,6 +124,10 @@ public class StockService {
         });
 
         return skucodeCounts;
+    }
+
+    public List<Stock> getStocksByUser(String email){
+        return stockRepository.findByUserEmail(email);
     }
 
 }

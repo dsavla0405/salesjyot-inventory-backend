@@ -19,8 +19,8 @@ public class PickListDataController {
     private PickListService pickListService;
 
     @GetMapping
-    public List<PickListData> getAllPickListData() {
-        return pickListDataService.getAllPickListData();
+    public List<PickListData> getAllPickListData(@RequestParam String email) {
+        return pickListDataService.getAllPickListData(email);
     }
 
     // Get picklist data by ID
@@ -48,15 +48,15 @@ public class PickListDataController {
     }
 
     @DeleteMapping("/picklistnumber/{pickListNumber}")
-    public void deletePickListDataByPickListNumber(@PathVariable Long pickListNumber) {
-        List<PickListData> toDelete = pickListDataService.deletePickListDataByPickListNumber(pickListNumber);
+    public void deletePickListDataByPickListNumber(@PathVariable Long pickListNumber, @RequestParam String email) {
+        List<PickListData> toDelete = pickListDataService.deletePickListDataByPickListNumber(pickListNumber, email);
         String bomCode = toDelete.get(0).getBomCode();
-        pickListService.deletePickListByPickListNumber(pickListNumber, bomCode);
+        pickListService.deletePickListByPickListNumber(pickListNumber, bomCode, email);
     }
 
     @GetMapping("/picklistdata")
-    public List<PickListData> getPickListDataByNumber(@RequestParam("pickListNumber") Long pickListNumber) {
-        return pickListDataService.findByPickListNumber(pickListNumber);
+    public List<PickListData> getPickListDataByNumber(@RequestParam("pickListNumber") Long pickListNumber, @RequestParam String email) {
+        return pickListDataService.findByPickListNumber(pickListNumber, email);
     }
 }
 

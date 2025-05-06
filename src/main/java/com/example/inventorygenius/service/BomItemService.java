@@ -53,4 +53,8 @@ public class BomItemService {
         BomItem bomItem = getBomItemById(bomItemId);
         bomItemRepository.delete(bomItem);
     }
+
+    public List<BomItem> getBomItemByUser(String email) {
+        return bomItemRepository.findByUserEmail(email);
+    }
 }

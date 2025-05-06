@@ -58,11 +58,13 @@ public class Return {
         @OneToOne(mappedBy = "order")
         private Item item;
     
-    
+        @Column (name = "user-email")
+        private String userEmail;
+
         public Return() {
         }
     
-        public Return(Date date, String skuCode, String portal, String orderNo, String returnCode, String trackingNumber, String okStock, String sentForRaisingTicketOn, String sentForTicketOn, Item item) {
+        public Return(Date date, String skuCode, String portal, String orderNo, String returnCode, String trackingNumber, String okStock, String sentForRaisingTicketOn, String sentForTicketOn, Item item, String userEmail) {
             this.date = date;
             this.skucode = skuCode;
             this.portal = portal;
@@ -73,6 +75,7 @@ public class Return {
             this.sentForRaisingTicketOn = sentForRaisingTicketOn;
             this.sentForTicketOn = sentForTicketOn;
             this.item = item;
+            this.userEmail = userEmail;
         }
 
         public Long getId() {
@@ -170,11 +173,12 @@ public class Return {
         public void setReturnId(Long returnId) {
             this.returnId = returnId;
         }
-    
-        
-    
-    
-    
 
+        public String getUserEmail() {
+            return userEmail;
+        }
 
+        public void setUserEmail(String userEmail) {
+            this.userEmail = userEmail;
+        }
 }

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import com.example.inventorygenius.entity.Storage;
 import com.example.inventorygenius.entity.Item;
+import com.example.inventorygenius.entity.StockInward;
 import com.example.inventorygenius.controller.ItemSupplierController;
 import com.example.inventorygenius.repository.StorageRepository;
 
@@ -92,5 +93,9 @@ public class StorageService {
 
     public Storage getStorageByBinAndRack(String binNumber, String rackNumber, String skucode) {
         return storageRepository.findByBinNumberAndRackNumberAndSkucode(binNumber, rackNumber, skucode);
+    }
+
+    public List<Storage> getStorageByUser(String email){
+        return storageRepository.findByUserEmail(email);
     }
 }

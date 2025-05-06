@@ -23,6 +23,7 @@ import com.example.inventorygenius.entity.PickListData;
 import com.example.inventorygenius.entity.Storage;
 
 import com.example.inventorygenius.entity.Item;
+import com.example.inventorygenius.entity.Location;
 import com.example.inventorygenius.entity.Stock;
 import com.example.inventorygenius.entity.StockCount;
 import com.example.inventorygenius.service.OrderService;
@@ -96,7 +97,6 @@ public class PickListService {
     
 
     public void deletePickList(Long id) {
-        // Check if the picklist with the given id exists
         if (pickListRepository.existsById(id)) {
             pickListRepository.deleteById(id);
         } else {
@@ -104,22 +104,19 @@ public class PickListService {
         }
     }
 
-    public List<Order> getAllNotGeneratedOrders() {
+    public List<Order> getAllNotGeneratedOrders(Location location, String email) {
         List<Order> notGeneratedOrders = new ArrayList<>();
-        List<Order> allOrders = orderService.getAllOrders();
-        List<PickList> allPickLists = getAllPickLists();
+        List<Order> allOrders = orderService.findOrdersByLocation(location, email);
+        List<PickList> allPickLists = getPickListsByUser(email);
         
-        // Create a set to store order numbers that are in pick lists
         Set<String> orderNumbersInPickLists = new HashSet<>();
         
-        // Iterate through all pick lists and collect order numbers
         for (PickList p : allPickLists) {
             for (Order or : p.getOrders()) {
                 orderNumbersInPickLists.add(or.getOrderNo());
             }
         }
         
-        // Iterate through all orders and add those that are not in any pick list and are not canceled
         for (Order o : allOrders) {
             if (!orderNumbersInPickLists.contains(o.getOrderNo()) && 
                 !"Order Canceled".equals(o.getCancel())) { // Check if order is not in any pick list and not canceled
@@ -149,6 +146,7 @@ public class PickListService {
                                 o.setPortal(order.getPortal());
                                 o.setSellerSKU(i.getSellerSKUCode());
                                 o.setImg(i.getImg());
+                                o.setSkucode(i.getSKUCode());
                                 o.setBomCode(bom.getBomCode());
                                 double totalQty = order.getQty() * Double.parseDouble(bomItem.getQty());
                                 o.setPickQty(order.getQty() * Double.parseDouble(bomItem.getQty()));
@@ -184,8 +182,8 @@ public class PickListService {
         return orderDataList;
     }
 
-    public List<OrderData> getOrderDatas() {
-        List<Order> orders = orderService.getAllOrders(); // Get orders from service/repository
+    public List<OrderData> getOrderDatas(String email) {
+        List<Order> orders = orderService.getOrdersByUser(email); // Get orders from service/repository
         List<OrderData> orderDataList = new ArrayList<>(); // List to hold order data
 
         for (Order order : orders) {
@@ -193,6 +191,7 @@ public class PickListService {
             //System.out.println("supplierSKU = " + order.getSellerSKU());
             Boolean generatedOrder = generated(order);
             if (!generatedOrder){
+                System.out.println("=====================================");
                 if (order.getItems() != null) {
                     for (Item item : order.getItems()) {
                         item = itemSupplierService.getItemBySKUCode(item.getSKUCode()); // Ensure you get the latest item
@@ -207,6 +206,8 @@ public class PickListService {
                         orderData.setPickQty((order.getQty()));
                         orderData.setSellerSKU(item.getSellerSKUCode());
                         orderData.setSkucode(item.getSKUCode());
+                        System.out.println("+++++++++++++++++++++++++++++++++++++");
+                        System.out.println("sku = " + item.getSKUCode());
                         Double totalQty = order.getQty();
 
                         if (getBestStorage(item, totalQty).size() > 0){
@@ -259,13 +260,13 @@ public class PickListService {
         return false;
     }
     
-    public List<PickListData> getData(){
-        return pickListDataService.getAllPickListData();
+    public List<PickListData> getData(String email){
+        return pickListDataService.getAllPickListData(email);
     }
     
 
-    public List<Bom> getOrdersWithBom(String OrderNo){
-        List<Order> orders = orderService.findByOrderNo(OrderNo);
+    public List<Bom> getOrdersWithBom(String OrderNo, String email){
+        List<Order> orders = orderService.findByOrderNo(OrderNo, email);
         List<Bom> bomList = new ArrayList<>();
         for(Order order : orders){
             for(Item item : order.getItems()){
@@ -302,9 +303,9 @@ public class PickListService {
           .toLocalDate();
     }
     
-    public String getDefaultBomCode (String orderNo){
+    public String getDefaultBomCode (String orderNo, String email){
         String bomC = "";
-        List<Order> orders = orderService.findByOrderNo(orderNo);
+        List<Order> orders = orderService.findByOrderNo(orderNo, email);
        for(Order order : orders){
             for(Item item : order.getItems()){
                 for (Bom bom : item.getBoms()){
@@ -317,9 +318,9 @@ public class PickListService {
         return bomC;
     }
 
-    public ResponseEntity<Void> deletePickListByPickListNumber(Long pickListNumber, String bomCode) {
+    public ResponseEntity<Void> deletePickListByPickListNumber(Long pickListNumber, String bomCode, String email) {
         // Find the picklist by pickListNumber
-        PickList pickList = pickListRepository.findByPickListNumber(pickListNumber);
+        PickList pickList = pickListRepository.findByPickListNumberAndUserEmail(pickListNumber, email);
         
         if (pickList != null) {
         // Check if pickList is not null (i.e., picklist exists)
@@ -330,9 +331,9 @@ public class PickListService {
         }
     }
     
-    public boolean isScannedItemValid(Long picklistNumber, String sku, Double scannedQty) {
+    public boolean isScannedItemValid(Long picklistNumber, String sku, Double scannedQty, String email) {
         // Retrieve the list of picklist data for the given picklist number
-        List<PickListData> picklistDataList = pickListDataService.findByPickListNumber(picklistNumber);
+        List<PickListData> picklistDataList = pickListDataService.findByPickListNumber(picklistNumber, email);
     
         // Log the retrieved picklist data for debugging
         System.out.println("Retrieved picklist data:");
@@ -363,8 +364,8 @@ public class PickListService {
     
     
 
-    public void processScannedItem(Long picklistNumber, String sku, Double scannedQty) {
-        boolean isValid = isScannedItemValid(picklistNumber, sku, scannedQty);
+    public void processScannedItem(Long picklistNumber, String sku, Double scannedQty, String email) {
+        boolean isValid = isScannedItemValid(picklistNumber, sku, scannedQty, email);
         if (isValid) {
             System.out.println("Scanned item is valid and quantity is correct.");
         } else {
@@ -372,6 +373,9 @@ public class PickListService {
         }
     }
     
+    public List<PickList> getPickListsByUser(String email){
+        return pickListRepository.findByUserEmail(email);
+    }
     
 }
 

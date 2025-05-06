@@ -35,15 +35,15 @@ public class PackingListDataService {
     }
 
     // Add new picklist data
-    public PackingListData addPackingListData(PackingListData packingListData) {
-        List<Order> orders = orderService.findByOrderNo(packingListData.getOrderNo());
+    public PackingListData addPackingListData(PackingListData packingListData, String email) {
+        List<Order> orders = orderService.findByOrderNo(packingListData.getOrderNo(), email);
         for(Order o : orders){
             packingListData.setOrder(o);
             break;
         }
         System.out.println("sellerSKU = " + packingListData.getSellerSKU());
         System.out.println("description = " + packingListData.getDescription());
-        Item item = itemSupplierService.findItemsBySellerSKUAndDescription(packingListData.getSellerSKU(), packingListData.getDescription());
+        Item item = itemSupplierService.getItemBySKUCode(packingListData.getSkucode());
         System.out.println("picklist item sku = " + item.getSKUCode());
         packingListData.setItem(item);
         return packingListDataRepository.save(packingListData);

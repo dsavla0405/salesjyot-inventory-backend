@@ -26,6 +26,9 @@ public class PickListData {
     @Column(name = "date")
     private LocalDate date;
 
+    @Column(name = "skucode")
+    private String skucode;
+
     @Column(name = "portal_order_no")
     private String portalOrderNo;
 
@@ -68,12 +71,15 @@ public class PickListData {
     @JoinColumn(name = "item_id")
     private Item item;
 
+    @Column (name = "user-email")
+    private String userEmail;
+
     public PickListData() {
     }
 
     public PickListData(Long pickListId, Long pickListNumber, LocalDate date, String portalOrderNo, String orderNo,
                         String bomCode, String portal, String sellerSKU, Double qty, String description, String binNumber,
-                        String rackNumber, Double pickQty) {
+                        String rackNumber, Double pickQty, String skucode, String userEmail) {
         this.pickListId = pickListId;
         this.pickListNumber = pickListNumber;
         this.date = date;
@@ -87,6 +93,8 @@ public class PickListData {
         this.binNumber = binNumber;
         this.rackNumber = rackNumber;
         this.pickQty = pickQty;
+        this.skucode = skucode;
+        this.userEmail = userEmail;
     }
 
     public Long getPickListId() {
@@ -216,4 +224,21 @@ public class PickListData {
     public void setItem(Item item) {
         this.item = item;
     }
+
+    public String getSkucode() {
+        return skucode;
+    }
+
+    public void setSkucode(String skucode) {
+        this.skucode = skucode;
+    }
+
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+    
 }

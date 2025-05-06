@@ -1,32 +1,34 @@
 package com.example.inventorygenius.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.example.inventorygenius.entity.Bom;
-import com.example.inventorygenius.entity.PackingListData;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.example.inventorygenius.entity.Item;
 import com.example.inventorygenius.entity.Order;
 import com.example.inventorygenius.entity.OrderData;
 import com.example.inventorygenius.entity.PackingList;
-import com.example.inventorygenius.entity.PickList;
-import com.example.inventorygenius.entity.BomItem;
+import com.example.inventorygenius.entity.PackingListData;
 import com.example.inventorygenius.entity.PickListData;
 import com.example.inventorygenius.entity.Storage;
 import com.example.inventorygenius.service.ItemSupplierService;
 import com.example.inventorygenius.service.OrderService;
-import com.example.inventorygenius.service.PackingListService;
-
 import com.example.inventorygenius.service.PackingListDataService;
+import com.example.inventorygenius.service.PackingListService;
 import com.example.inventorygenius.service.PickListService;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
@@ -49,13 +51,13 @@ public class PackingListController {
     private PackingListDataService packingListDataService;
 
     @GetMapping("/not/generated/packinglist/orders")
-    public List<Order> getNotGeneratedPackingListOrders() {
-        return packingListService.getAllNotGeneratedPackListOrders();
+    public List<Order> getNotGeneratedPackingListOrders(@RequestParam String email) {
+        return packingListService.getAllNotGeneratedPackListOrders(email);
     }
 
     @GetMapping
-    public ResponseEntity<List<PackingList>> getAllPickLists() {
-        List<PackingList> pickLists = packingListService.getAllPickLists();
+    public ResponseEntity<List<PackingList>> getAllPickLists(@RequestParam String email) {
+        List<PackingList> pickLists = packingListService.getAllPickListsByUser(email);
         return ResponseEntity.ok(pickLists);
     }
 
@@ -187,8 +189,8 @@ public class PackingListController {
     // }
 
     @GetMapping("/orderData")
-    public List<OrderData> getOrdersData() {
-        List <PickListData> pickListDatas = pickListService.getData();
+    public List<OrderData> getOrdersData(@RequestParam String email) {
+        List <PickListData> pickListDatas = pickListService.getData(email);
         List<OrderData> orderDataList = new ArrayList<>(); // List to hold order data
 
         for (PickListData p : pickListDatas){
@@ -200,6 +202,7 @@ public class PackingListController {
             o.setQty(p.getQty());
             o.setSellerSKU(p.getItem().getSellerSKUCode());
             o.setPickQty(p.getPickQty());
+            o.setSkucode(p.getSkucode());
             orderDataList.add(o);
         }
         return orderDataList;
@@ -225,8 +228,8 @@ public class PackingListController {
         return storages;
     }
 
-    public boolean generated(Order order){
-        for (PackingList pickList : packingListService.getAllPickLists()){
+    public boolean generated(Order order, String email){
+        for (PackingList pickList : packingListService.getAllPickListsByUser(email)){
             for (Order o : pickList.getOrders()){
                 if (o.getOrderNo().equals(order.getOrderNo())){
                     return true;
@@ -242,9 +245,9 @@ public class PackingListController {
     }
 
     @GetMapping("/selected/orderData")
-    public List<OrderData> getSelectedOrderData(@RequestParam String orderNo) {
+    public List<OrderData> getSelectedOrderData(@RequestParam String orderNo, @RequestParam String email) {
         List<OrderData> selectedOrderData = new ArrayList<>();
-        for (OrderData o : getOrdersData()){
+        for (OrderData o : getOrdersData(email)){
             if(o.getOrderNo().equals(orderNo)){
                 selectedOrderData.add(o);
             }

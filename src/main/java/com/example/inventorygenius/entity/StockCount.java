@@ -16,12 +16,13 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.FetchType;
 
 @Entity
-@Table(name = "stock-count")
+@Table(name = "stock_count")
 public class StockCount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,13 +40,22 @@ public class StockCount {
     @JoinColumn(name = "combo_id") // Foreign key in StockCount table
     private Combo combo;
 
+    @ManyToOne()
+    @JoinColumn(name = "location_id")
+    private Location location;
+
+    @Column (name = "user-email")
+    private String userEmail;
+
     public StockCount() {
 
     }
 
-    public StockCount(Long stockCountId, double count) {
+    public StockCount(Long stockCountId, double count, Location location, String userEmail) {
         this.stockCountId = stockCountId;
         this.count = count;
+        this.userEmail = userEmail;
+        this.location = location;
     }
 
     public Long getStockCountId() {
@@ -80,4 +90,20 @@ public class StockCount {
         this.combo = combo;
     }
 
+    public String getUserEmail() {
+        return userEmail;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
+    
 }
