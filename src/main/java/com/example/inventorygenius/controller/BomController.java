@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "http://localhost:3000", allowCredentials = "true")
 @RequestMapping("/boms")
 public class BomController {
 
@@ -50,7 +51,6 @@ public class BomController {
         Bom bom = bomService.getBomByBomCode(bomCode, email);
         return ResponseEntity.ok(bom);
     }
-
     @GetMapping("/user/email")
     public List<Bom> getBomFromUser(@RequestParam String email) {
         return bomService.getBomByEmail(email);

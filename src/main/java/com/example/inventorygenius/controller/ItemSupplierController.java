@@ -22,7 +22,6 @@ import com.example.inventorygenius.service.ItemSupplierService;
 import com.example.inventorygenius.service.StockCountService;
 
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/item/supplier")
 public class ItemSupplierController {
     @Autowired
@@ -47,10 +45,14 @@ public class ItemSupplierController {
 
     @PostMapping
     public Item saveItemWithExistingSupplier(@RequestBody Item item) {
+        // Check if suppliers list is empty
         if (item.getSuppliers().isEmpty()) {
+            // Handle scenario where no suppliers are provided (e.g., return an error response)
+            // Here, we simply return null to indicate failure
             return itemRepository.save(item);
         }
         
+        // Find the existing supplier by its ID or other unique identifier
         Optional<Supplier> existingSupplier = supplierRepository.findById(item.getSuppliers().get(0).getSupplierId());
     
         if (existingSupplier.isPresent()) {

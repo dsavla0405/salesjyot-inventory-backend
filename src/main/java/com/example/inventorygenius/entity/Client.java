@@ -96,6 +96,14 @@ public class Client {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+	@Override
+	public String toString() {
+		return "Client [clientId=" + clientId + ", email=" + email + ", password=" + password + ", companyName="
+				+ companyName + ", firstName=" + firstName + ", lastName=" + lastName + ", phone=" + phone + "]";
+	}
+    
+    
     
 }
 
