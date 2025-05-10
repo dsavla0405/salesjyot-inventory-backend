@@ -14,12 +14,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/supplier")
 public class SupplierController {
 
+	
     @Autowired
     private SupplierService supplierService;
 
