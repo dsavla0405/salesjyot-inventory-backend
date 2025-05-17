@@ -31,8 +31,10 @@ public class PackingListDataController {
 
     // Add new picklist data
     @PostMapping
-    public PackingListData addPackListData(@RequestBody PackingListData packListData, @RequestParam String email) {
-        return packingListDataService.addPackingListData(packListData, email);
+    public PackingListData addPackListData(@RequestBody PackingListData packListData) {
+//    	String email=packListData.getUserEmail();
+    	System.out.println("Packing list dt Controller Testing in controller");
+        return packingListDataService.addPackingListData(packListData);
     }
 
     // Update picklist data

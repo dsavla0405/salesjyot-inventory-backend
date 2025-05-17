@@ -35,8 +35,9 @@ public class PackingListDataService {
     }
 
     // Add new picklist data
-    public PackingListData addPackingListData(PackingListData packingListData, String email) {
-        List<Order> orders = orderService.findByOrderNo(packingListData.getOrderNo(), email);
+    public PackingListData addPackingListData(PackingListData packingListData) {
+        System.out.println("Testing insdie packlist data service-----------------");
+    	List<Order> orders = orderService.findByOrderNo(packingListData.getOrderNo(), packingListData.getUserEmail());
         for(Order o : orders){
             packingListData.setOrder(o);
             break;
