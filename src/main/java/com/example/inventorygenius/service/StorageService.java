@@ -59,16 +59,16 @@ public class StorageService {
         Item item = itemService.findItem(itemId);
 
         // Add the item to the storage's list of items
-        storage.getItems().add(item);
+//        storage.getItems().add(item);
 
         // Add the storage to the item's list of storages
-        item.getStorages().add(storage);
+//        item.getStorages().add(storage);
 
         // Save the storage first
         storageRepository.save(storage);
 
         // Update the item
-        itemService.updateItem(item.getItemId(), item);
+//        itemService.updateItem(item.getItemId(), item);
 
         return storage;
     }
@@ -77,12 +77,14 @@ public class StorageService {
         Storage storage = storageRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Storage not found with id: " + id));
 
+        System.out.println("storageDeatils in UpdateStorage Method::::"+storageDetails);
         storage.setBinNumber(storageDetails.getBinNumber());
         storage.setRackNumber(storageDetails.getRackNumber());
         storage.setSkucode(storageDetails.getSkucode());
         storage.setQty(storageDetails.getQty());
-        storage.setItems(storageDetails.getItems());
+//        storage.setItems(storageDetails.getItems());
         storage.setPickListData(storageDetails.getPickListData());
+        storage.setLocation(storageDetails.getLocation());
 
         return storageRepository.save(storage);
     }
