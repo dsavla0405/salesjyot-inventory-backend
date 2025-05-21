@@ -5,13 +5,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "stock_transfer") // Changed hyphen to underscore
@@ -38,19 +34,37 @@ public class StockTransfer {
 
     @Column (name = "user-email")
     private String userEmail;
+    
+    @ManyToOne
+    @JoinColumn(name = "from_storage_id", referencedColumnName = "storage_id", nullable = true)
+    private Storage fromStorage;
 
     public StockTransfer() {
 
     }
 
-    public StockTransfer(Long stockTransferId, Location fromLocation, Location toLocation, String userEmail) {
-        this.stockTransferId = stockTransferId;
-        this.fromLocation = fromLocation;
-        this.toLocation = toLocation;
-        this.userEmail = userEmail;
-    }
+   
 
-    public Long getStockTransferId() {
+    public StockTransfer(Long stockTransferId, Location fromLocation, Location toLocation, Item item, Double qty,
+			String userEmail, Storage fromStorage) {
+		this.stockTransferId = stockTransferId;
+		this.fromLocation = fromLocation;
+		this.toLocation = toLocation;
+		this.item = item;
+		this.qty = qty;
+		this.userEmail = userEmail;
+		this.fromStorage = fromStorage;
+	}
+
+	public Storage getFromStorage() {
+		return fromStorage;
+	}
+
+	public void setFromStorage(Storage fromStorage) {
+		this.fromStorage = fromStorage;
+	}
+
+	public Long getStockTransferId() {
         return stockTransferId;
     }
 
@@ -97,5 +111,14 @@ public class StockTransfer {
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
+
+
+
+	@Override
+	public String toString() {
+		return "StockTransfer [stockTransferId=" + stockTransferId + ", fromLocation=" + fromLocation + ", toLocation="
+				+ toLocation + ", item=" + item + ", qty=" + qty + ", userEmail=" + userEmail + ", fromStorage="
+				+ fromStorage + "]";
+	}
     
 }

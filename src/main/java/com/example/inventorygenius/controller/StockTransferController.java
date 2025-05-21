@@ -1,15 +1,23 @@
 package com.example.inventorygenius.controller;
 
-import com.example.inventorygenius.entity.StockInward;
-import com.example.inventorygenius.entity.StockTransfer;
-import com.example.inventorygenius.service.StockTransferService;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.Optional;
+import com.example.inventorygenius.entity.StockTransfer;
+import com.example.inventorygenius.service.StockTransferService;
 
 @RestController
 @RequestMapping("/api/stocktransfer")
@@ -35,9 +43,18 @@ public class StockTransferController {
 
     // Create a new stock transfer
     @PostMapping("/create")
-    public ResponseEntity<StockTransfer> createStockTransfer(@RequestBody StockTransfer stockTransfer) {
-        StockTransfer newStockTransfer = stockTransferService.saveStockTransfer(stockTransfer);
+    public ResponseEntity<?> createStockTransfer(@RequestBody StockTransfer stockTransfer) {
+        try {
+    	StockTransfer newStockTransfer = stockTransferService.saveStockTransfer(stockTransfer);
         return new ResponseEntity<>(newStockTransfer, HttpStatus.CREATED);
+        }
+        catch (IllegalArgumentException e) {
+            // Send specific message to frontend
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST); // or HttpStatus.FORBIDDEN if that's preferred
+        } catch (Exception e) {
+            // For all other unexpected errors
+            return new ResponseEntity<>("Something went wrong", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     // Update an existing stock transfer
