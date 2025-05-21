@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
 //import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -45,16 +46,16 @@ public class WebConfig implements WebMvcConfigurer {
     }
     
 // ------------Use to log request coming from front end ---------------	
-//	@Bean
-//	public CommonsRequestLoggingFilter requestLoggingFilter() {
-//		System.out.println("---------------------heree in web Config 33333---------------");
-//		CommonsRequestLoggingFilter loggingFilter = new CommonsRequestLoggingFilter();
-//		loggingFilter.setIncludeHeaders(true);
-//	    loggingFilter.setIncludePayload(true);
-//	    loggingFilter.setMaxPayloadLength(10000);
-//	    loggingFilter.setAfterMessagePrefix("REQUEST DATA : ");
-//	    return loggingFilter;
-//	}
+	@Bean
+	public CommonsRequestLoggingFilter requestLoggingFilter() {
+		System.out.println("---------------------heree in web Config 33333---------------");
+		CommonsRequestLoggingFilter loggingFilter = new CommonsRequestLoggingFilter();
+		loggingFilter.setIncludeHeaders(true);
+	    loggingFilter.setIncludePayload(true);
+	    loggingFilter.setMaxPayloadLength(10000);
+	    loggingFilter.setAfterMessagePrefix("REQUEST DATA : ");
+	    return loggingFilter;
+	}
 	
 	
     
