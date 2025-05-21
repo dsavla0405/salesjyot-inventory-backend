@@ -1,18 +1,17 @@
 package com.example.inventorygenius.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import com.example.inventorygenius.entity.Storage;
-import com.example.inventorygenius.entity.Item;
-import com.example.inventorygenius.entity.StockInward;
 import com.example.inventorygenius.controller.ItemSupplierController;
+import com.example.inventorygenius.entity.Item;
+import com.example.inventorygenius.entity.Storage;
 import com.example.inventorygenius.repository.StorageRepository;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class StorageService {
@@ -100,4 +99,9 @@ public class StorageService {
     public List<Storage> getStorageByUser(String email){
         return storageRepository.findByUserEmail(email);
     }
+
+	public List<Storage> getStorageByItemId(Long id) {
+		
+		return storageRepository.findStorageByItemId(id);
+	}
 }
