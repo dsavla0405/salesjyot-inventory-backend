@@ -15,4 +15,5 @@ public interface StockCountRepository extends JpaRepository<StockCount, Long> {
     List<StockCount> findByComboIsNotNullAndUserEmail(String email);
 
     List<StockCount> findByUserEmail(String userEmail);
+
 }

@@ -55,8 +55,8 @@ public class StockInwardController {
         String number = String.valueOf(stockInwardId);
 
         Stock stock = new Stock();
-        stock.setDate(LocalDate.now());
-        stock.setSkucode(stockInward.getSkucode());
+        stock.setDate(stockInward.getDate());
+        stock.setSkucode(stockInward.getItem().getSKUCode());
         stock.setAddQty(stockInward.getQty());
         stock.setSubQty("0");
         stock.setItem(stockInward.getItem());
@@ -109,16 +109,17 @@ public class StockInwardController {
     }
 
     @DeleteMapping("/{id}")
-public void deleteStockInward(@PathVariable("id") Long stockInwardId) {
-    System.out.println("Deleting StockInward with id: " + stockInwardId);
-    try {
-        stockInwardService.deleteStockInwardById(stockInwardId);
-        System.out.println("Deleted StockInward with id: " + stockInwardId);
-    } catch (Exception e) {
-        System.err.println("Error deleting StockInward with id " + stockInwardId + ": " + e.getMessage());
-        e.printStackTrace();
+    public void deleteStockInward(@PathVariable("id") Long stockInwardId, @RequestParam String email) {
+        System.out.println("Deleting StockInward with id: " + stockInwardId);
+        try {
+
+            stockInwardService.deleteStockInwardById(stockInwardId, email);
+            System.out.println("Deleted StockInward with id: " + stockInwardId);
+        } catch (Exception e) {
+            System.err.println("Error deleting StockInward with id " + stockInwardId + ": " + e.getMessage());
+            e.printStackTrace();
+        }
     }
-}
 
     @PutMapping("/{id}")
     public ResponseEntity<StockInward> updateStockInward(@PathVariable Long id, @RequestBody StockInward stockInwardDetails) {
@@ -127,24 +128,20 @@ public void deleteStockInward(@PathVariable("id") Long stockInwardId) {
         Stock stock = updatedStockInward.getStock();
 
         StockCount stockCount = stockCountService.getStockCountBySKUCode(stockInwardDetails.getSkucode(), stockInwardDetails.getUserEmail());
-        stockCount.setCount(Double.parseDouble(updatedStockInward.getQty()));
+        stockCount.setCount(Double.parseDouble(stockInwardDetails.getQty()));
 
 
         if (stock == null) {
-            // Handle the case where stock is null, e.g., by creating a new Stock or returning an error
-            // For example, you could throw an exception or log an error
-            // throw new RuntimeException("Stock entity is null for StockInward with id " + id);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
 
         System.out.println(stock.getMessage());
 
-        
+        stock.setDate(updatedStockInward.getDate());
         stock.setSkucode(updatedStockInward.getSkucode());
         stock.setAddQty(updatedStockInward.getQty());
         stock.setLocation(updatedStockInward.getLocation());
 
-        // Save the updated Stock entity
         stockService.updateStock(stock.getStockId(), stock);
 
         return new ResponseEntity<>(updatedStockInward, HttpStatus.OK);
