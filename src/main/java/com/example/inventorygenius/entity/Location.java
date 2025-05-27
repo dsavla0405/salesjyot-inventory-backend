@@ -50,6 +50,10 @@ public class Location {
     @OneToMany(mappedBy = "location")
     private List<Storage> storages;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "location")
+    private List<Return> returns;
+
     @Column (name = "user-email")
     private String userEmail;
 
@@ -125,6 +129,14 @@ public class Location {
 
     public void setStorages(List<Storage> storages) {
         this.storages = storages;
+    }
+
+    public List<Return> getReturns() {
+        return returns;
+    }
+
+    public void setReturns(List<Return> returns) {
+        this.returns = returns;
     }
 
 }

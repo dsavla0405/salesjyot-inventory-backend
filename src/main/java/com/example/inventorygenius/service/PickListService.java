@@ -266,13 +266,12 @@ public class PickListService {
     
 
     public List<Bom> getOrdersWithBom(String OrderNo, String email){
-        List<Order> orders = orderService.findByOrderNo(OrderNo, email);
+        Order order = orderService.findByOrderNo(OrderNo, email);
         List<Bom> bomList = new ArrayList<>();
-        for(Order order : orders){
             for(Item item : order.getItems()){
                 bomList.addAll(item.getBoms());
             }
-        }
+        
         return bomList;
     }
 
@@ -305,15 +304,14 @@ public class PickListService {
     
     public String getDefaultBomCode (String orderNo, String email){
         String bomC = "";
-        List<Order> orders = orderService.findByOrderNo(orderNo, email);
-       for(Order order : orders){
+        Order order = orderService.findByOrderNo(orderNo, email);
             for(Item item : order.getItems()){
                 for (Bom bom : item.getBoms()){
                     if (isCurrentDateBetween(bom)){
                         bomC = bom.getBomCode();
                     }
                 }
-            }
+            
         } 
         return bomC;
     }

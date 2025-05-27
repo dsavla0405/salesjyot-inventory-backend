@@ -3,6 +3,7 @@ package com.example.inventorygenius.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.inventorygenius.entity.Bom;
@@ -46,6 +47,7 @@ public class ReturnController {
         return new ResponseEntity<>(updatedStorage, HttpStatus.OK);
     }
 
+    @Transactional
     @GetMapping("/user/email")
     public List<Return> getReturnsByUser(@RequestParam String email) {
         return returnService.getReturnsByUser(email);

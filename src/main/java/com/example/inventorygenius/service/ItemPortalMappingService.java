@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import com.example.inventorygenius.entity.ItemPortalMapping;
 import com.example.inventorygenius.entity.StockInward;
 import com.example.inventorygenius.repository.ItemPortalMappingRepository;
-
+import jakarta.persistence.EntityNotFoundException; // Make sure to import this
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -54,4 +54,10 @@ public class ItemPortalMappingService {
     public List<ItemPortalMapping> gItemPortalMappingsByUser(String email) {
         return itemportalmappingRepository.findByUserEmail(email);
     }
+
+    public ItemPortalMapping getByIdAndUserEmail(Long id, String email) {
+        return itemportalmappingRepository.findByIdAndUserEmail(id, email)
+            .orElseThrow(() -> new EntityNotFoundException("Mapping not found for id: " + id + " and email: " + email));
+    }
+    
 }
