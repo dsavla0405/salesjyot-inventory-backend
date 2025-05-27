@@ -61,11 +61,9 @@ public class PickListDataService {
     // Add new picklist data
     @Transactional
     public PickListData addPickListData(PickListData pickListData) {
-        List<Order> orders = orderService.findByOrderNo(pickListData.getOrderNo(), pickListData.getUserEmail());
-        for (Order o : orders) {
-            pickListData.setOrder(o);
-            break;
-        }
+        Order order = orderService.findByOrderNo(pickListData.getOrderNo(), pickListData.getUserEmail());
+        pickListData.setOrder(order);
+        
 
         System.out.println("sellerSKU = " + pickListData.getSellerSKU());
         System.out.println("description = " + pickListData.getDescription());
@@ -78,7 +76,6 @@ public class PickListDataService {
         pickListData.setStorage(storage);
         pickListData.setItem(itemP);
 
-        for (Order order : orders) {
                 Stock stock = new Stock();
                 stock.setItem(itemP);
                 stock.setSkucode(itemP.getSKUCode());
@@ -95,7 +92,7 @@ public class PickListDataService {
 
             changeStockCount(itemP, pickListData.getPickQty(), pickListData.getUserEmail());
 
-        }
+        
 
         return pickListDataRepository.save(pickListData);
     }
@@ -130,11 +127,10 @@ public class PickListDataService {
         for(PickListData p : pickListDataList){
             Item itemP = p.getItem();
             
-                List<Order> orders = orderService.findByOrderNo(p.getOrderNo(), p.getUserEmail());
-                for(Order o : orders){
-                    o.setOrderStatus("Order Received");
-                    orderService.updateOrder(o.getOrderId(), o);
-                }
+                Order order = orderService.findByOrderNo(p.getOrderNo(), p.getUserEmail());
+                order.setOrderStatus("Order Received");
+                orderService.updateOrder(order.getOrderId(), order);
+                
 
                 Stock stock = new Stock();
                 stock.setItem(itemP);

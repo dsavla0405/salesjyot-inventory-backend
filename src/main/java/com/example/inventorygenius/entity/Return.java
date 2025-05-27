@@ -17,6 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -55,28 +56,47 @@ public class Return {
         @Column(name = "sentForTicketOn")
         private String sentForTicketOn;
     
-        @OneToOne(mappedBy = "order")
-        private Item item;
-    
         @Column (name = "user-email")
         private String userEmail;
+
+        @ManyToOne()
+        @JoinColumn(name = "location_id")
+        private Location location;
+
+        @ManyToOne()
+        @JoinColumn(name = "order_id")
+        private Order order;
+
+        @ManyToOne()
+        @JoinColumn(name = "item_id")
+        private Item item;
+
+        @ManyToOne()
+        @JoinColumn(name = "item_portal_mapping_id")
+        private ItemPortalMapping itemPortalMapping;
+
 
         public Return() {
         }
     
-        public Return(Date date, String skuCode, String portal, String orderNo, String returnCode, String trackingNumber, String okStock, String sentForRaisingTicketOn, String sentForTicketOn, Item item, String userEmail) {
-            this.date = date;
-            this.skucode = skuCode;
-            this.portal = portal;
-            this.orderNo = orderNo;
-            this.returnCode = returnCode;
-            this.trackingNumber = trackingNumber;
-            this.okStock = okStock;
-            this.sentForRaisingTicketOn = sentForRaisingTicketOn;
-            this.sentForTicketOn = sentForTicketOn;
-            this.item = item;
-            this.userEmail = userEmail;
-        }
+        public Return(Date date, String skucode, String portal, String orderNo, String returnCode, String trackingNumber,
+                  String okStock, String sentForRaisingTicketOn, String sentForTicketOn, Item item,
+                  String userEmail, Order order, ItemPortalMapping itemPortalMapping, Location location) {
+        this.date = date;
+        this.skucode = skucode;
+        this.portal = portal;
+        this.orderNo = orderNo;
+        this.returnCode = returnCode;
+        this.trackingNumber = trackingNumber;
+        this.okStock = okStock;
+        this.sentForRaisingTicketOn = sentForRaisingTicketOn;
+        this.sentForTicketOn = sentForTicketOn;
+        this.item = item;
+        this.userEmail = userEmail;
+        this.order = order;
+        this.itemPortalMapping = itemPortalMapping;
+        this.location = location;
+    }
 
         public Long getId() {
             return returnId;
@@ -158,12 +178,30 @@ public class Return {
             this.sentForTicketOn = sentForTicketOn;
         }
 
+        
+
+        public Order getOrder() {
+            return order;
+        }
+
+        public void setOrder(Order order) {
+            this.order = order;
+        }
+
         public Item getItem() {
             return item;
         }
 
         public void setItem(Item item) {
             this.item = item;
+        }
+
+        public ItemPortalMapping getItemPortalMapping() {
+            return itemPortalMapping;
+        }
+
+        public void setItemPortalMapping(ItemPortalMapping itemPortalMapping) {
+            this.itemPortalMapping = itemPortalMapping;
         }
 
         public Long getReturnId() {
@@ -181,4 +219,14 @@ public class Return {
         public void setUserEmail(String userEmail) {
             this.userEmail = userEmail;
         }
+
+        public Location getLocation() {
+            return location;
+        }
+
+        public void setLocation(Location location) {
+            this.location = location;
+        }
+
+        
 }

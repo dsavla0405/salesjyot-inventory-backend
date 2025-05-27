@@ -160,8 +160,7 @@ public ResponseEntity<PickList> createPickList(@RequestBody PickList pickList) {
     @GetMapping("/getSelectedOrderData")
     public List<OrderData> getMethodName(@RequestParam String orderNo, @RequestParam String bomCode, @RequestParam String email) {
        String bomC = "";
-        List<Order> orders = orderService.findByOrderNo(orderNo, email);
-       for(Order order : orders){
+        Order order = orderService.findByOrderNo(orderNo, email);
             for(Item item : order.getItems()){
                 for (Bom bom : item.getBoms()){
                     if (item.getBoms().size() > 0 && bomCode.equals("")){
@@ -179,7 +178,7 @@ public ResponseEntity<PickList> createPickList(@RequestBody PickList pickList) {
                     
                 }
             }
-       }
+       
        System.out.println("bom in picklist merge rows = " + bomC);
        List<OrderData> oo = new ArrayList<>();
        if(bomC.length() > 0){

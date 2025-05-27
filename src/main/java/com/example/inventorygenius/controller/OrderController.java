@@ -85,7 +85,6 @@ public ResponseEntity<Order> updateOrder(@PathVariable Long orderId, @RequestBod
         existingOrder.setOrderStatus(updatedOrder.getOrderStatus());
         System.out.println("Updated order: " + existingOrder);
 
-        // Check if the order has been canceled
         if (updatedOrder.getCancel().equals("Order Canceled") && updatedOrder.getPicklist() == null) {
             System.out.println("Order is canceled. Updating stock.");
             Stock stock = new Stock();
@@ -362,26 +361,23 @@ public ResponseEntity<Order> updateOrder(@PathVariable Long orderId, @RequestBod
 
     @PutMapping("/dispatchByAwbNo")
     public String dispatchOrdersByAwbNo(@RequestParam String orderNo, @RequestParam String email) {
-        List<Order> ordersToUpdate = orderRepository.findByOrderNoAndUserEmail(orderNo, email);
+        Order orderToUpdate = orderRepository.findByOrderNoAndUserEmail(orderNo, email);
         
-        // Update status for each order
-        for (Order order : ordersToUpdate) {
-            order.setOrderStatus("dispatched");
-            orderRepository.save(order);
-        }
+            orderToUpdate.setOrderStatus("dispatched");
+            orderRepository.save(orderToUpdate);
+        
 
         return "Orders with Order No. " + orderNo + " dispatched successfully";
     }
 
     @PutMapping("/packByAwbNo")
     public String packOrdersByAwbNo(@RequestParam String orderNo, @RequestParam String email) {
-        List<Order> ordersToUpdate = orderRepository.findByOrderNoAndUserEmail(orderNo, email);
+        Order orderToUpdate = orderRepository.findByOrderNoAndUserEmail(orderNo, email);
         
         // Update status for each order
-        for (Order order : ordersToUpdate) {
-            order.setOrderStatus("packed");
-            orderRepository.save(order);
-        }
+        orderToUpdate.setOrderStatus("packed");
+            orderRepository.save(orderToUpdate);
+        
 
         return "Orders with Order No. " + orderNo + " packed successfully";
     }
@@ -389,6 +385,11 @@ public ResponseEntity<Order> updateOrder(@PathVariable Long orderId, @RequestBod
     @GetMapping("/user/email")
     public List<Order> getOrdersByUser(@RequestParam String email) {
         return orderService.getOrdersByUser(email);
+    }
+
+    @GetMapping("/byOrderNo")
+    public Order getOrderByOrderNo(@RequestParam String orderNo, @RequestParam String email){
+        return orderService.findByOrderNo(orderNo, email);
     }
 
 }

@@ -109,7 +109,7 @@ public class OrderService {
         }
     }
 
-    public List<Order> findByOrderNo(String orderNo, String email) {
+    public Order findByOrderNo(String orderNo, String email) {
         return orderRepository.findByOrderNoAndUserEmail(orderNo, email);
     }
 

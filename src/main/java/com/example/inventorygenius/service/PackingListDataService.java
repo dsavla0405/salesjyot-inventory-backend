@@ -37,11 +37,9 @@ public class PackingListDataService {
     // Add new picklist data
     public PackingListData addPackingListData(PackingListData packingListData) {
         System.out.println("Testing insdie packlist data service-----------------");
-    	List<Order> orders = orderService.findByOrderNo(packingListData.getOrderNo(), packingListData.getUserEmail());
-        for(Order o : orders){
-            packingListData.setOrder(o);
-            break;
-        }
+    	Order order = orderService.findByOrderNo(packingListData.getOrderNo(), packingListData.getUserEmail());
+        packingListData.setOrder(order);
+        
         System.out.println("sellerSKU = " + packingListData.getSellerSKU());
         System.out.println("description = " + packingListData.getDescription());
         Item item = itemSupplierService.getItemBySKUCode(packingListData.getSkucode());
