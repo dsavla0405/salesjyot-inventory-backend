@@ -55,7 +55,7 @@ public class StockInwardService {
     }
 
     @Transactional
-    public void deleteStockInwardById(Long id) {
+    public void deleteStockInwardById(Long id, String email) {
         StockInward SI = findById(id);
         if (SI == null) {
             throw new IllegalArgumentException("StockInward with id " + id + " not found.");
@@ -70,7 +70,7 @@ public class StockInwardService {
         }
     
         Stock stock = new Stock();
-        stock.setDate(LocalDate.now());
+        stock.setDate(SI.getDate());
         stock.setSkucode(SI.getItem().getSKUCode());
         stock.setAddQty("0");
         stock.setSubQty(SI.getQty());
@@ -79,6 +79,7 @@ public class StockInwardService {
         stock.setMessage("stock inward deleted");
         stock.setNumber("id = " + id);
         stock.setLocation(SI.getLocation());
+        stock.setUserEmail(email);
     
         System.out.println("Creating new Stock entry: " + stock);
     
@@ -110,6 +111,8 @@ public class StockInwardService {
         stockInward.setQty(stockInwardDetails.getQty());
         stockInward.setStock(stockInwardDetails.getStock());
         stockInward.setItem(stockInwardDetails.getItem());
+        stockInward.setLocation(stockInwardDetails.getLocation());
+        stockInward.setUserEmail(stockInwardDetails.getUserEmail());
 
         return stockInwardRepository.save(stockInward);
     }
