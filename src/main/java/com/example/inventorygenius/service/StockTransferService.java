@@ -55,13 +55,14 @@ public class StockTransferService {
     	    }
     	    else {
     	        // Case 2: Partial transfer
-    	        double remainingQty = currentQty - stockTransfer.getQty();
+    	        int remainingQty =(int) (currentQty - stockTransfer.getQty());
+    	        System.out.println("remainingQty::::"+remainingQty);
     	        StorageData.setQty(String.valueOf(remainingQty));
     	        storageRepo.save(StorageData);
     	        
     	        List<Item> copiedItems = new ArrayList<>(StorageData.getItems());
     	        Storage NewStorage = new Storage();
-    	        NewStorage.setQty(String.valueOf(stockTransfer.getQty()));
+    	        NewStorage.setQty(String.valueOf((stockTransfer.getQty()).intValue()));
     	        NewStorage.setSkucode(stockTransfer.getItem().getSKUCode());
     	        NewStorage.setItems(copiedItems);
     	        NewStorage.setRackNumber("tbd"); // from input

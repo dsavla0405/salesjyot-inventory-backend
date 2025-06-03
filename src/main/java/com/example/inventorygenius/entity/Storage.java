@@ -153,5 +153,11 @@ public class Storage {
     public void setLocation(Location location) {
         this.location = location;
     }
+    
+    @Override
+	public String toString() {
+		return "Storage [storageId=" + storageId + ", binNumber=" + binNumber + ", rackNumber=" + rackNumber
+				+ ", skucode=" + skucode + ", qty=" + qty + ", items=" + items + ", pickListData=" + pickListData + "]";
+	}
 
 }

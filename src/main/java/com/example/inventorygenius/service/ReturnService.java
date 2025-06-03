@@ -137,6 +137,7 @@ public class ReturnService {
                 stock.setOkStock(stockDetails.getOkStock());
                 stock.setSentForTicketOn(stockDetails.getSentForTicketOn());
                 stock.setSentForRaisingTicketOn(stockDetails.getSentForRaisingTicketOn());
+                stock.setLocation(stockDetails.getLocation());
 
         return returnRepository.save(stock);
     }

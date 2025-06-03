@@ -42,7 +42,7 @@ public class StorageController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Storage> updateBom(@PathVariable Long id, @RequestBody Storage storageDetails) {
+    public ResponseEntity<Storage> updateStorage(@PathVariable Long id, @RequestBody Storage storageDetails) {
         Storage updatedStorage = storageService.updateStorage(id, storageDetails);
         return new ResponseEntity<>(updatedStorage, HttpStatus.OK);
     }

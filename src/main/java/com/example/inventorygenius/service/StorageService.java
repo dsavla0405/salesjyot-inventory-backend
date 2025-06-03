@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.example.inventorygenius.controller.ItemSupplierController;
 import com.example.inventorygenius.entity.Item;
 import com.example.inventorygenius.entity.Storage;
+import com.example.inventorygenius.repository.ItemRepository;
 import com.example.inventorygenius.repository.StorageRepository;
 
 @Service
@@ -19,6 +20,9 @@ public class StorageService {
     private final StorageRepository storageRepository;
     private ItemSupplierService itemSupplierService;
     private ItemSupplierController itemService;
+    
+    @Autowired
+    ItemRepository itemRepository;
 
     @Autowired
     public StorageService(StorageRepository storageRepository) {
@@ -81,9 +85,16 @@ public class StorageService {
         storage.setRackNumber(storageDetails.getRackNumber());
         storage.setSkucode(storageDetails.getSkucode());
         storage.setQty(storageDetails.getQty());
-//        storage.setItems(storageDetails.getItems());
+//      storage.setItems(storageDetails.getItems());
         storage.setPickListData(storageDetails.getPickListData());
         storage.setLocation(storageDetails.getLocation());
+        
+        Item i=itemRepository.findBySKUCodeAndUserEmail(storageDetails.getSkucode(),storageDetails.getUserEmail());  
+        List<Item> list_item = new ArrayList<>();
+        list_item.add(i);
+        
+        storage.setItems(list_item);
+       
 
         return storageRepository.save(storage);
     }

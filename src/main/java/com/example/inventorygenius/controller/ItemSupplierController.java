@@ -131,7 +131,7 @@ public class ItemSupplierController {
     }
 
     @GetMapping("/search/skucode/{skucode}")
-    public Item getMethodName(@PathVariable String skucode, @RequestParam String email) {
+    public Item findBySKUCodeAndUserEmail(@PathVariable String skucode, @RequestParam String email) {
         return itemRepository.findBySKUCodeAndUserEmail(skucode, email);
     }
 
