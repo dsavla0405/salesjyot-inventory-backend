@@ -146,5 +146,14 @@ public class Bom {
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
+
+	@Override
+	public String toString() {
+		return "Bom [bomId=" + bomId + ", SKUCode=" + SKUCode + ", bomCode=" + bomCode + ", defaultStartDate="
+				+ defaultStartDate + ", defaultEndDate=" + defaultEndDate + ", bomItems=" + bomItems + ", itemsInBom="
+				+ itemsInBom + ", comboItems=" + comboItems + ", userEmail=" + userEmail + "]";
+	}
+    
+    
     
 }

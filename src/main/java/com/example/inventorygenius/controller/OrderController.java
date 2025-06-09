@@ -1,395 +1,402 @@
 package com.example.inventorygenius.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.example.inventorygenius.entity.Bom;
-import com.example.inventorygenius.entity.Item;
-import com.example.inventorygenius.entity.Location;
+import com.example.inventorygenius.RequestDTO.OrderRequestDTO;
 import com.example.inventorygenius.entity.Order;
-import com.example.inventorygenius.entity.BomItem;
-import com.example.inventorygenius.entity.Stock;
-import com.example.inventorygenius.entity.StockCount;
 import com.example.inventorygenius.repository.OrderRepository;
 import com.example.inventorygenius.service.ItemSupplierService;
 import com.example.inventorygenius.service.OrderService;
+import com.example.inventorygenius.service.PickListService;
 import com.example.inventorygenius.service.StockCountService;
 import com.example.inventorygenius.service.StockService;
-import com.example.inventorygenius.service.PickListService;
-
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/orders")
 public class OrderController {
 
-    @Autowired
-    private OrderService orderService;
+	@Autowired
+	private OrderService orderService;
 
-    @Autowired 
-    private StockService stockService;
+	@Autowired
+	private StockService stockService;
 
-    @Autowired 
-    private StockCountService stockCountService;
+	@Autowired
+	private StockCountService stockCountService;
 
-    @Autowired
-    private ItemSupplierService itemSupplierService;
+	@Autowired
+	private ItemSupplierService itemSupplierService;
 
-    @Autowired
-    private PickListService pickListService;
+	@Autowired
+	private PickListService pickListService;
 
-    @PostMapping
-    public ResponseEntity<Order> addItem(@RequestBody Order order) {
-        Order newOrder = orderService.addOrder(order);
-        return new ResponseEntity<>(newOrder, HttpStatus.CREATED);
-    }
+	@PostMapping
+	public ResponseEntity<Order> addItem(@RequestBody Order order) {
+		Order newOrder = orderService.addOrder(order);
+		return new ResponseEntity<>(newOrder, HttpStatus.CREATED);
+	}
 
-    @GetMapping
-    public ResponseEntity<List<Order>> getAllItems() {
-        List<Order> orders = orderService.getAllOrders();
-        return new ResponseEntity<>(orders, HttpStatus.OK);
-    }
+	@PostMapping("/new")
+	public ResponseEntity<List<Order>> addnewOrder(@RequestBody OrderRequestDTO order) {
+		List<Order> newOrder = orderService.addnewOrder(order);
+		return new ResponseEntity<>(newOrder, HttpStatus.CREATED);
+	}
 
-    @PutMapping("/{orderId}")
-public ResponseEntity<Order> updateOrder(@PathVariable Long orderId, @RequestBody Order updatedOrder) {
-    System.out.println("Received request to update order with ID: " + orderId);
+	@GetMapping
+	public ResponseEntity<List<Order>> getAllItems() {
+		List<Order> orders = orderService.getAllOrders();
+		return new ResponseEntity<>(orders, HttpStatus.OK);
+	}
 
-    Optional<Order> existingOrderOptional = orderRepository.findById(orderId);
+	@PutMapping("/{orderId}")
+	public ResponseEntity<Order> updateOrder(@PathVariable Long orderId, @RequestBody OrderRequestDTO updateOrderDTO) {
 
-    if (existingOrderOptional.isPresent()) {
-        Order existingOrder = existingOrderOptional.get();
-        System.out.println("Existing order found: " + existingOrder);
+		return orderService.editOrder(orderId, updateOrderDTO);
+	}
+//    System.out.println("Received request to update order with ID: " + orderId);
+//
+//    Optional<Order> existingOrderOptional = orderRepository.findById(orderId);
+//
+//    if (existingOrderOptional.isPresent()) {
+//        Order existingOrder = existingOrderOptional.get();
+//        System.out.println("Existing order found: " + existingOrder);
+//
+//        // Update properties of the existing item with the new values
+//        existingOrder.setCourier(updatedOrder.getCourier());
+//        existingOrder.setDate(updatedOrder.getDate());
+//        existingOrder.setDispatched(updatedOrder.getDispatched());
+//        existingOrder.setOrderNo(updatedOrder.getOrderNo());
+//        existingOrder.setPortal(updatedOrder.getPortal());
+//        existingOrder.setPortalOrderLineId(updatedOrder.getPortalOrderLineId());
+//        existingOrder.setPortalOrderNo(updatedOrder.getPortalOrderNo());
+//        existingOrder.setPortalSKU(updatedOrder.getPortalSKU());
+//        existingOrder.setProductDescription(updatedOrder.getProductDescription());
+//        existingOrder.setQty(updatedOrder.getQty());
+//        existingOrder.setShipByDate(updatedOrder.getShipByDate());
+//        existingOrder.setSkucode(updatedOrder.getSkucode());
+//        existingOrder.setCancel(updatedOrder.getCancel());
+//        existingOrder.setItems(updatedOrder.getItems());
+//        existingOrder.setAwbNo(updatedOrder.getAwbNo());
+//        existingOrder.setOrderStatus(updatedOrder.getOrderStatus());
+//        System.out.println("Updated order: " + existingOrder);
+//
+//        if (updatedOrder.getCancel().equals("Order Canceled") && updatedOrder.getPicklist() == null) {
+//            System.out.println("Order is canceled. Updating stock.");
+//            Stock stock = new Stock();
+//            Item item = itemSupplierService.getItemBySKUCode(updatedOrder.getItems().get(0).getSKUCode());
+//
+//            if(item == null) {
+//                System.out.println("Item is null for SKUCode: " + updatedOrder.getItems().get(0).getSKUCode());
+//            } else {
+//                System.out.println("Item found: " + item);
+//            }
+//
+//            if (item != null && item.getBoms().size() > 0) {
+//                stock.setDate(LocalDate.now());
+//                stock.setSkucode(item.getParentSKU());
+//                stock.setSubQty("0");
+//
+//                for (Bom bom : item.getBoms()) {
+//                    for (BomItem bomItem : bom.getItemsInBom()) {
+//                        if (bomItem.getItem().getSKUCode().equals(item.getParentSKU())) {
+//                            stock.setAddQty(String.valueOf(updatedOrder.getQty() * Double.parseDouble(bomItem.getQty())));
+//                        } else {
+//                            Stock s = new Stock();
+//                            stock.setDate(LocalDate.now());
+//                            s.setSubQty("0");
+//                            s.setItem(item);
+//                            s.setAddQty(String.valueOf(updatedOrder.getQty() * Double.parseDouble(bomItem.getQty())));
+//                            s.setSkucode(bomItem.getBomItem());
+//                            s.setSource("Order");
+//                            s.setMessage("Order Cancelled");
+//                            s.setNumber("Order Number = " + String.valueOf(updatedOrder.getOrderNo()));
+//                            s.setLocation(updatedOrder.getLocation());
+//                            System.out.println("Adding stock for BOM item: " + s);
+//                            stockService.addStock(s);
+//                        }
+//                    }
+//                }
+//
+//                stock.setItem(updatedOrder.getItems().get(0));
+//                stock.setSource("Order");
+//                stock.setMessage("Order Cancelled");
+//                stock.setNumber("Order Number = " + String.valueOf(updatedOrder.getOrderNo()));
+//                stock.setLocation(updatedOrder.getLocation());
+//            } else {
+//                stock.setDate(LocalDate.now());
+//                stock.setSkucode(updatedOrder.getItems().get(0).getSKUCode());
+//                stock.setSubQty("0");
+//                stock.setAddQty(String.valueOf(updatedOrder.getQty()));
+//                stock.setItem(updatedOrder.getItems().get(0));
+//                stock.setSource("Order");
+//                stock.setLocation(updatedOrder.getLocation());
+//                stock.setMessage("Order Cancelled");
+//                stock.setNumber("Order Number = " + String.valueOf(updatedOrder.getOrderNo()));
+//            }
+//
+//            System.out.println("Adding stock: " + stock);
+//            stockService.addStock(stock);
+//
+//            StockCount sc = new StockCount();
+//            if (updatedOrder.getItems().get(0).getBoms().size() > 0) {
+//                for (Bom b : updatedOrder.getItems().get(0).getBoms()) {
+//                    for (BomItem bomItem : b.getItemsInBom()) {
+//                        if (bomItem.getItem().getSKUCode().equals(updatedOrder.getItems().get(0).getParentSKU())) {
+//                            sc = stockCountService.getStockCountBySKUCode(updatedOrder.getItems().get(0).getParentSKU(), updatedOrder.getUserEmail());
+//                            sc.setCount(sc.getCount() + updatedOrder.getQty() * Double.parseDouble(bomItem.getQty()));
+//                        } else {
+//                            StockCount scBom = stockCountService.getStockCountBySKUCode(bomItem.getItem().getSKUCode(), updatedOrder.getUserEmail());
+//                            scBom.setCount(scBom.getCount() + updatedOrder.getQty() * Double.parseDouble(bomItem.getQty()));
+//                            System.out.println("Updating stock count for BOM item: " + scBom);
+//                            stockCountService.updateStockCount(scBom);
+//                        }
+//                    }
+//                }
+//            } else {
+//                sc = stockCountService.getStockCountBySKUCode(updatedOrder.getItems().get(0).getSKUCode(), updatedOrder.getUserEmail());
+//                sc.setCount(sc.getCount() + updatedOrder.getQty());
+//            }
+//            System.out.println("Updating stock count1: " + sc);
+//            stockCountService.updateStockCount(sc);
+//        }
+//
+//        if (updatedOrder.getCancel().equals("Order Not Canceled")) {
+//            System.out.println("Order is not canceled. Updating stock.");
+//            Stock stock = new Stock();
+//            Item item = itemSupplierService.getItemBySKUCode(updatedOrder.getItems().get(0).getSKUCode());
+//
+//            if(item == null) {
+//                System.out.println("Item is null for SKUCode: " + updatedOrder.getItems().get(0).getSKUCode());
+//            } else {
+//                System.out.println("Item found: " + item);
+//            }
+//
+//            if (item != null && item.getBoms().size() > 0) {
+//                stock.setDate(LocalDate.now());
+//                stock.setSkucode(item.getParentSKU());
+//                stock.setAddQty("0");
+//
+//                for (Bom bom : item.getBoms()) {
+//                    for (BomItem bomItem : bom.getItemsInBom()) {
+//                        if (bomItem.getBomItem().equals(item.getParentSKU())) {
+//                            stock.setSubQty(String.valueOf(updatedOrder.getQty() * Double.parseDouble(bomItem.getQty())));
+//                        } else {
+//                            Stock s = new Stock();
+//                            s.setDate(LocalDate.now());
+//                            s.setAddQty("0");
+//                            s.setItem(item);
+//                            s.setSubQty(String.valueOf(updatedOrder.getQty() * Double.parseDouble(bomItem.getQty())));
+//                            s.setSkucode(bomItem.getBomItem());
+//                            s.setSource("Order");
+//                            s.setLocation(updatedOrder.getLocation());
+//                            s.setMessage("Order Not Cancelled");
+//                            s.setNumber("Order Number = " + String.valueOf(updatedOrder.getOrderNo()));
+//
+//                            System.out.println("Adding stock for BOM item: " + s);
+//                            stockService.addStock(s);
+//                        }
+//                    }
+//                }
+//
+//                stock.setItem(updatedOrder.getItems().get(0));
+//                stock.setSource("Order");
+//                stock.setLocation(updatedOrder.getLocation());
+//                stock.setMessage("Order Not Cancelled");
+//                stock.setNumber("Order Number = " + String.valueOf(updatedOrder.getOrderNo()));
+//            } else {
+//                stock.setDate(LocalDate.now());
+//                stock.setSkucode(updatedOrder.getItems().get(0).getSKUCode());
+//                stock.setAddQty("0");
+//                stock.setSubQty(String.valueOf(updatedOrder.getQty()));
+//                stock.setItem(updatedOrder.getItems().get(0));
+//                stock.setSource("Order");
+//                stock.setLocation(updatedOrder.getLocation());
+//                stock.setMessage("Order Not Cancelled");
+//                stock.setNumber("Order Number = " + String.valueOf(updatedOrder.getOrderNo()));
+//            }
+//
+//            System.out.println("Adding stock: " + stock);
+//            stockService.addStock(stock);
+//
+//            // StockCount sc = stockCountService.getStockCountBySKUCode(updatedOrder.getItems().get(0).getSKUCode());
+//            // System.out.println("stock count sku = " + sc.getItem().getSKUCode());
+//            // if (updatedOrder.getItems().get(0).getBoms().size() > 0) {
+//            //     for (Bom b : updatedOrder.getItems().get(0).getBoms()) {
+//            //         for (BomItem bomItem : b.getItemsInBom()) {
+//            //             if (bomItem.getBomItem().equals(updatedOrder.getItems().get(0).getParentSKU())) {
+//            //                 sc = stockCountService.getStockCountBySKUCode(updatedOrder.getItems().get(0).getParentSKU());
+//            //                 if (existingOrder.getQty() != updatedOrder.getQty()) {
+//            //                     sc.setCount(sc.getCount() + updatedOrder.getQty() * Double.parseDouble(bomItem.getQty()));
+//            //                 }
+//            //             } else {
+//            //                 StockCount scBom = stockCountService.getStockCountBySKUCode(bomItem.getBomItem());
+//            //                 if (existingOrder.getQty() != updatedOrder.getQty()) {
+//            //                     scBom.setCount(scBom.getCount() + updatedOrder.getQty() * Double.parseDouble(bomItem.getQty()));
+//            //                 }
+//            //                 System.out.println("Updating stock count for BOM item: " + scBom);
+//            //                 stockCountService.updateStockCount(scBom);
+//            //             }
+//            //         }
+//            //     }
+//            // }
+//            // System.out.println("Updating stock count2: " + sc);
+//            // stockCountService.updateStockCount(sc);
+//        }
+//
+//        // Save the updated item
+//        System.out.println("Saving updated order: " + existingOrder);
+//        Order savedOrder = orderRepository.save(existingOrder);
+//
+//        System.out.println("Updated order saved: " + savedOrder);
+//        return ResponseEntity.ok(savedOrder);
+//    } else {
+//        System.out.println("Order not found for ID: " + orderId);
+//        return ResponseEntity.notFound().build();
+//    }
+//}
 
-        // Update properties of the existing item with the new values
-        existingOrder.setCourier(updatedOrder.getCourier());
-        existingOrder.setDate(updatedOrder.getDate());
-        existingOrder.setDispatched(updatedOrder.getDispatched());
-        existingOrder.setOrderNo(updatedOrder.getOrderNo());
-        existingOrder.setPortal(updatedOrder.getPortal());
-        existingOrder.setPortalOrderLineId(updatedOrder.getPortalOrderLineId());
-        existingOrder.setPortalOrderNo(updatedOrder.getPortalOrderNo());
-        existingOrder.setPortalSKU(updatedOrder.getPortalSKU());
-        existingOrder.setProductDescription(updatedOrder.getProductDescription());
-        existingOrder.setQty(updatedOrder.getQty());
-        existingOrder.setShipByDate(updatedOrder.getShipByDate());
-        existingOrder.setSkucode(updatedOrder.getSkucode());
-        existingOrder.setCancel(updatedOrder.getCancel());
-        existingOrder.setItems(updatedOrder.getItems());
-        existingOrder.setAwbNo(updatedOrder.getAwbNo());
-        existingOrder.setOrderStatus(updatedOrder.getOrderStatus());
-        System.out.println("Updated order: " + existingOrder);
+	@DeleteMapping("/{id}")
+	public void deleteOrder(@PathVariable("id") Long id) {
+		System.out.println("deleted");
+		orderService.deleteOrderById(id);
+	}
 
-        if (updatedOrder.getCancel().equals("Order Canceled") && updatedOrder.getPicklist() == null) {
-            System.out.println("Order is canceled. Updating stock.");
-            Stock stock = new Stock();
-            Item item = itemSupplierService.getItemBySKUCode(updatedOrder.getItems().get(0).getSKUCode());
+	private final OrderRepository orderRepository;
 
-            if(item == null) {
-                System.out.println("Item is null for SKUCode: " + updatedOrder.getItems().get(0).getSKUCode());
-            } else {
-                System.out.println("Item found: " + item);
-            }
+	@Autowired
+	public OrderController(OrderRepository orderRepository) {
+		this.orderRepository = orderRepository;
+	}
 
-            if (item != null && item.getBoms().size() > 0) {
-                stock.setDate(LocalDate.now());
-                stock.setSkucode(item.getParentSKU());
-                stock.setSubQty("0");
+	@GetMapping("/with-items")
+	public List<Order> getOrdersWithItems() {
+		return orderRepository.findAllWithItems();
+	}
 
-                for (Bom bom : item.getBoms()) {
-                    for (BomItem bomItem : bom.getItemsInBom()) {
-                        if (bomItem.getItem().getSKUCode().equals(item.getParentSKU())) {
-                            stock.setAddQty(String.valueOf(updatedOrder.getQty() * Double.parseDouble(bomItem.getQty())));
-                        } else {
-                            Stock s = new Stock();
-                            stock.setDate(LocalDate.now());
-                            s.setSubQty("0");
-                            s.setItem(item);
-                            s.setAddQty(String.valueOf(updatedOrder.getQty() * Double.parseDouble(bomItem.getQty())));
-                            s.setSkucode(bomItem.getBomItem());
-                            s.setSource("Order");
-                            s.setMessage("Order Cancelled");
-                            s.setNumber("Order Number = " + String.valueOf(updatedOrder.getOrderNo()));
-                            s.setLocation(updatedOrder.getLocation());
-                            System.out.println("Adding stock for BOM item: " + s);
-                            stockService.addStock(s);
-                        }
-                    }
-                }
+	@PutMapping("/scan/dispatch")
+	public ResponseEntity<?> updateOrderStatusDispatch(@RequestParam String awb) {
+		List<Order> updatedOrders = new ArrayList<>();
+		List<Order> allOrders = orderService.getAllOrders();
 
-                stock.setItem(updatedOrder.getItems().get(0));
-                stock.setSource("Order");
-                stock.setMessage("Order Cancelled");
-                stock.setNumber("Order Number = " + String.valueOf(updatedOrder.getOrderNo()));
-                stock.setLocation(updatedOrder.getLocation());
-            } else {
-                stock.setDate(LocalDate.now());
-                stock.setSkucode(updatedOrder.getItems().get(0).getSKUCode());
-                stock.setSubQty("0");
-                stock.setAddQty(String.valueOf(updatedOrder.getQty()));
-                stock.setItem(updatedOrder.getItems().get(0));
-                stock.setSource("Order");
-                stock.setLocation(updatedOrder.getLocation());
-                stock.setMessage("Order Cancelled");
-                stock.setNumber("Order Number = " + String.valueOf(updatedOrder.getOrderNo()));
-            }
+		if (allOrders == null || allOrders.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No orders found.");
+		}
 
-            System.out.println("Adding stock: " + stock);
-            stockService.addStock(stock);
+		for (Order order : allOrders) {
+			String orderAwbNo = order.getAwbNo();
+			if (orderAwbNo != null && orderAwbNo.equals(awb)) {
+				if (order.getOrderStatus().equals("packed")) {
+					order.setOrderStatus("dispatched");
+					orderService.updateOrder(order.getOrderId(), order);
+					updatedOrders.add(order);
+				} else {
+					return ResponseEntity.status(HttpStatus.CONFLICT).body("Order with AWB " + awb + " is not packed.");
+				}
+			}
+		}
 
-            StockCount sc = new StockCount();
-            if (updatedOrder.getItems().get(0).getBoms().size() > 0) {
-                for (Bom b : updatedOrder.getItems().get(0).getBoms()) {
-                    for (BomItem bomItem : b.getItemsInBom()) {
-                        if (bomItem.getItem().getSKUCode().equals(updatedOrder.getItems().get(0).getParentSKU())) {
-                            sc = stockCountService.getStockCountBySKUCode(updatedOrder.getItems().get(0).getParentSKU(), updatedOrder.getUserEmail());
-                            sc.setCount(sc.getCount() + updatedOrder.getQty() * Double.parseDouble(bomItem.getQty()));
-                        } else {
-                            StockCount scBom = stockCountService.getStockCountBySKUCode(bomItem.getItem().getSKUCode(), updatedOrder.getUserEmail());
-                            scBom.setCount(scBom.getCount() + updatedOrder.getQty() * Double.parseDouble(bomItem.getQty()));
-                            System.out.println("Updating stock count for BOM item: " + scBom);
-                            stockCountService.updateStockCount(scBom);
-                        }
-                    }
-                }
-            } else {
-                sc = stockCountService.getStockCountBySKUCode(updatedOrder.getItems().get(0).getSKUCode(), updatedOrder.getUserEmail());
-                sc.setCount(sc.getCount() + updatedOrder.getQty());
-            }
-            System.out.println("Updating stock count1: " + sc);
-            stockCountService.updateStockCount(sc);
-        }
+		if (updatedOrders.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No orders with AWB " + awb + " found.");
+		}
 
-        if (updatedOrder.getCancel().equals("Order Not Canceled")) {
-            System.out.println("Order is not canceled. Updating stock.");
-            Stock stock = new Stock();
-            Item item = itemSupplierService.getItemBySKUCode(updatedOrder.getItems().get(0).getSKUCode());
+		return ResponseEntity.ok(updatedOrders);
+	}
 
-            if(item == null) {
-                System.out.println("Item is null for SKUCode: " + updatedOrder.getItems().get(0).getSKUCode());
-            } else {
-                System.out.println("Item found: " + item);
-            }
+	@PutMapping("/scan/pack")
+	public ResponseEntity<?> updateOrderStatusPack(@RequestParam String awb) {
+		List<Order> updatedOrders = new ArrayList<>();
+		List<Order> allOrders = orderService.getAllOrders();
 
-            if (item != null && item.getBoms().size() > 0) {
-                stock.setDate(LocalDate.now());
-                stock.setSkucode(item.getParentSKU());
-                stock.setAddQty("0");
+		if (allOrders == null || allOrders.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No orders found.");
+		}
 
-                for (Bom bom : item.getBoms()) {
-                    for (BomItem bomItem : bom.getItemsInBom()) {
-                        if (bomItem.getBomItem().equals(item.getParentSKU())) {
-                            stock.setSubQty(String.valueOf(updatedOrder.getQty() * Double.parseDouble(bomItem.getQty())));
-                        } else {
-                            Stock s = new Stock();
-                            s.setDate(LocalDate.now());
-                            s.setAddQty("0");
-                            s.setItem(item);
-                            s.setSubQty(String.valueOf(updatedOrder.getQty() * Double.parseDouble(bomItem.getQty())));
-                            s.setSkucode(bomItem.getBomItem());
-                            s.setSource("Order");
-                            s.setLocation(updatedOrder.getLocation());
-                            s.setMessage("Order Not Cancelled");
-                            s.setNumber("Order Number = " + String.valueOf(updatedOrder.getOrderNo()));
+		for (Order order : allOrders) {
+			String orderAwbNo = order.getAwbNo();
+			if (orderAwbNo != null && orderAwbNo.equals(awb)) {
+				if (order.getOrderStatus().equals("packinglist generated")) {
+					order.setOrderStatus("packed");
+					orderService.updateOrder(order.getOrderId(), order);
+					updatedOrders.add(order);
+				} else {
+					return ResponseEntity.status(HttpStatus.CONFLICT)
+							.body("Packing list for Order with AWB " + awb + " is not generated.");
+				}
+			}
+		}
 
-                            System.out.println("Adding stock for BOM item: " + s);
-                            stockService.addStock(s);
-                        }
-                    }
-                }
+		if (updatedOrders.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No orders with AWB " + awb + " found.");
+		}
 
-                stock.setItem(updatedOrder.getItems().get(0));
-                stock.setSource("Order");
-                stock.setLocation(updatedOrder.getLocation());
-                stock.setMessage("Order Not Cancelled");
-                stock.setNumber("Order Number = " + String.valueOf(updatedOrder.getOrderNo()));
-            } else {
-                stock.setDate(LocalDate.now());
-                stock.setSkucode(updatedOrder.getItems().get(0).getSKUCode());
-                stock.setAddQty("0");
-                stock.setSubQty(String.valueOf(updatedOrder.getQty()));
-                stock.setItem(updatedOrder.getItems().get(0));
-                stock.setSource("Order");
-                stock.setLocation(updatedOrder.getLocation());
-                stock.setMessage("Order Not Cancelled");
-                stock.setNumber("Order Number = " + String.valueOf(updatedOrder.getOrderNo()));
-            }
+		return ResponseEntity.ok(updatedOrders);
+	}
 
-            System.out.println("Adding stock: " + stock);
-            stockService.addStock(stock);
+	@GetMapping("notDispatched")
+	public List<Order> getNotDispatchedOrders() {
+		return orderService.findNotDispatchedOrders();
+	}
 
-            // StockCount sc = stockCountService.getStockCountBySKUCode(updatedOrder.getItems().get(0).getSKUCode());
-            // System.out.println("stock count sku = " + sc.getItem().getSKUCode());
-            // if (updatedOrder.getItems().get(0).getBoms().size() > 0) {
-            //     for (Bom b : updatedOrder.getItems().get(0).getBoms()) {
-            //         for (BomItem bomItem : b.getItemsInBom()) {
-            //             if (bomItem.getBomItem().equals(updatedOrder.getItems().get(0).getParentSKU())) {
-            //                 sc = stockCountService.getStockCountBySKUCode(updatedOrder.getItems().get(0).getParentSKU());
-            //                 if (existingOrder.getQty() != updatedOrder.getQty()) {
-            //                     sc.setCount(sc.getCount() + updatedOrder.getQty() * Double.parseDouble(bomItem.getQty()));
-            //                 }
-            //             } else {
-            //                 StockCount scBom = stockCountService.getStockCountBySKUCode(bomItem.getBomItem());
-            //                 if (existingOrder.getQty() != updatedOrder.getQty()) {
-            //                     scBom.setCount(scBom.getCount() + updatedOrder.getQty() * Double.parseDouble(bomItem.getQty()));
-            //                 }
-            //                 System.out.println("Updating stock count for BOM item: " + scBom);
-            //                 stockCountService.updateStockCount(scBom);
-            //             }
-            //         }
-            //     }
-            // }
-            // System.out.println("Updating stock count2: " + sc);
-            // stockCountService.updateStockCount(sc);
-        }
+	@GetMapping("notPacked")
+	public List<Order> getNotPackedOrders(@RequestParam String email) {
+		return orderService.findNotPackedOrders(email);
+	}
 
-        // Save the updated item
-        System.out.println("Saving updated order: " + existingOrder);
-        Order savedOrder = orderRepository.save(existingOrder);
+	@GetMapping("/findByAwbNo")
+	public List<Order> findByAwbNo(@RequestParam String awbNo) {
+		return orderRepository.findByAwbNo(awbNo);
+	}
 
-        System.out.println("Updated order saved: " + savedOrder);
-        return ResponseEntity.ok(savedOrder);
-    } else {
-        System.out.println("Order not found for ID: " + orderId);
-        return ResponseEntity.notFound().build();
-    }
-}
+	@PutMapping("/dispatchByAwbNo")
+	public String dispatchOrdersByAwbNo(@RequestParam String orderNo, @RequestParam String email) {
+		Order orderToUpdate = orderRepository.findByOrderNoAndUserEmail(orderNo, email);
 
+		orderToUpdate.setOrderStatus("dispatched");
+		orderRepository.save(orderToUpdate);
 
+		return "Orders with Order No. " + orderNo + " dispatched successfully";
+	}
 
-    @DeleteMapping("/{id}")
-    public void deleteOrder(@PathVariable("id") Long id) {
-        System.out.println("deleted");
-        orderService.deleteOrderById(id);
-    }
+	@PutMapping("/packByAwbNo")
+	public String packOrdersByAwbNo(@RequestParam String orderNo, @RequestParam String email) {
+		Order orderToUpdate = orderRepository.findByOrderNoAndUserEmail(orderNo, email);
 
-    private final OrderRepository orderRepository;
+		// Update status for each order
+		orderToUpdate.setOrderStatus("packed");
+		orderRepository.save(orderToUpdate);
 
-     @Autowired
-    public OrderController(OrderRepository orderRepository) {
-        this.orderRepository = orderRepository;
-    }
+		return "Orders with Order No. " + orderNo + " packed successfully";
+	}
 
-    @GetMapping("/with-items")
-    public List<Order> getOrdersWithItems() {
-        return orderRepository.findAllWithItems();
-    }
+	@GetMapping("/user/email")
+	public List<Order> getOrdersByUser(@RequestParam String email) {
+		
+		return orderService.getOrdersByUser(email);
+	}
 
-     
-
-    
-
-    @PutMapping("/scan/dispatch")
-    public ResponseEntity<?> updateOrderStatusDispatch(@RequestParam String awb) {
-        List<Order> updatedOrders = new ArrayList<>();
-        List<Order> allOrders = orderService.getAllOrders();
-        
-        if (allOrders == null || allOrders.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No orders found.");
-        }
-
-        for (Order order : allOrders) {
-            String orderAwbNo = order.getAwbNo();
-            if (orderAwbNo != null && orderAwbNo.equals(awb)) {
-                if (order.getOrderStatus().equals("packed")) {
-                    order.setOrderStatus("dispatched");
-                    orderService.updateOrder(order.getOrderId(), order);
-                    updatedOrders.add(order);
-                } else {
-                    return ResponseEntity.status(HttpStatus.CONFLICT).body("Order with AWB " + awb + " is not packed.");
-                }
-            }
-        }
-
-        if (updatedOrders.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No orders with AWB " + awb + " found.");
-        }
-
-        return ResponseEntity.ok(updatedOrders);
-    }
-
-
-    @PutMapping("/scan/pack")
-    public ResponseEntity<?> updateOrderStatusPack(@RequestParam String awb) {
-        List<Order> updatedOrders = new ArrayList<>();
-        List<Order> allOrders = orderService.getAllOrders();
-        
-        if (allOrders == null || allOrders.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No orders found.");
-        }
-
-        for (Order order : allOrders) {
-            String orderAwbNo = order.getAwbNo();
-            if (orderAwbNo != null && orderAwbNo.equals(awb)) {
-                if (order.getOrderStatus().equals("packinglist generated")) {
-                    order.setOrderStatus("packed");
-                    orderService.updateOrder(order.getOrderId(), order);
-                    updatedOrders.add(order);
-                } else {
-                    return ResponseEntity.status(HttpStatus.CONFLICT).body("Packing list for Order with AWB " + awb + " is not generated.");
-                }
-            }
-        }
-
-        if (updatedOrders.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No orders with AWB " + awb + " found.");
-        }
-
-        return ResponseEntity.ok(updatedOrders);
-    }
-
-    @GetMapping("notDispatched")
-    public List<Order> getNotDispatchedOrders(){
-        return orderService.findNotDispatchedOrders();
-    }
-
-    @GetMapping("notPacked")
-    public List<Order> getNotPackedOrders(@RequestParam String email) {
-        return orderService.findNotPackedOrders(email);
-    }
-    
-    @GetMapping("/findByAwbNo")
-    public List<Order> findByAwbNo(
-            @RequestParam String awbNo) {
-        return orderRepository.findByAwbNo(awbNo);
-    }
-
-    @PutMapping("/dispatchByAwbNo")
-    public String dispatchOrdersByAwbNo(@RequestParam String orderNo, @RequestParam String email) {
-        Order orderToUpdate = orderRepository.findByOrderNoAndUserEmail(orderNo, email);
-        
-            orderToUpdate.setOrderStatus("dispatched");
-            orderRepository.save(orderToUpdate);
-        
-
-        return "Orders with Order No. " + orderNo + " dispatched successfully";
-    }
-
-    @PutMapping("/packByAwbNo")
-    public String packOrdersByAwbNo(@RequestParam String orderNo, @RequestParam String email) {
-        Order orderToUpdate = orderRepository.findByOrderNoAndUserEmail(orderNo, email);
-        
-        // Update status for each order
-        orderToUpdate.setOrderStatus("packed");
-            orderRepository.save(orderToUpdate);
-        
-
-        return "Orders with Order No. " + orderNo + " packed successfully";
-    }
-
-    @GetMapping("/user/email")
-    public List<Order> getOrdersByUser(@RequestParam String email) {
-        return orderService.getOrdersByUser(email);
-    }
-
-    @GetMapping("/byOrderNo")
-    public Order getOrderByOrderNo(@RequestParam String orderNo, @RequestParam String email){
-        return orderService.findByOrderNo(orderNo, email);
-    }
+	@GetMapping("/byOrderNo")
+	public Order getOrderByOrderNo(@RequestParam String orderNo, @RequestParam String email) {
+		return orderService.findByOrderNo(orderNo, email);
+	}
+	
+	@GetMapping("setNewOrderNo")
+	public String setNewOrderNo(@RequestParam String email) {
+		return orderService.setNewOrderNo(email);
+	}
+	
 
 }
