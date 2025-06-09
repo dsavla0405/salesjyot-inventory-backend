@@ -199,7 +199,7 @@ public class Order {
         return skucode;
     }
 
-    public void setSkucode(String sellerSKU) {
+    public void setSkucode(String skucode) {
         this.skucode = skucode;
     }
 
@@ -322,5 +322,16 @@ public class Order {
     public void setUserEmail(String userEmail) {
         this.userEmail = userEmail;
     }
+
+	@Override
+	public String toString() {
+		return "Order [orderId=" + orderId + ", Date=" + Date + ", orderNo=" + orderNo + ", portal=" + portal
+				+ ", portalOrderNo=" + portalOrderNo + ", portalOrderLineId=" + portalOrderLineId + ", portalSKU="
+				+ portalSKU + ", skucode=" + skucode + ", productDescription=" + productDescription + ", qty=" + qty
+				+ ", shipByDate=" + shipByDate + ", dispatched=" + dispatched + ", courier=" + courier + ", cancel="
+				+ cancel + ", orderStatus=" + orderStatus + ", awbNo=" + awbNo + ", items=" + items + ", picklist="
+				+ picklist + ", itemPortalMapping=" + itemPortalMapping + ", pickListData=" + pickListData
+				+ ", packingListData=" + packingListData + ", location=" + location + ", userEmail=" + userEmail + "]";
+	}
     
 }
