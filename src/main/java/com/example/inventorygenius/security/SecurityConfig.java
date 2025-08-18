@@ -1,10 +1,9 @@
 package com.example.inventorygenius.security;
 
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import static org.springframework.security.config.Customizer.withDefaults;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -12,11 +11,6 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.core.session.SessionRegistry;
 import org.springframework.security.core.session.SessionRegistryImpl;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.session.RegisterSessionAuthenticationStrategy;
-import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-
-import jakarta.servlet.http.HttpSession;
 
 
 @Configuration
@@ -55,7 +49,7 @@ public class SecurityConfig {
 	        )
 	        .oauth2Login(oauth2 -> oauth2
 //	        		.successHandler(customOAuth2SuccessHandler(sessionRegistry()))
-	            .defaultSuccessUrl("http://localhost:3000/home", true) // redirect after Google login
+	            .defaultSuccessUrl("https://techjyot.up.railway.app/home", true) // redirect after Google login
 	        )
 	        .sessionManagement(session -> session
 		            .maximumSessions(1)
