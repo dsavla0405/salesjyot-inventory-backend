@@ -49,7 +49,7 @@ public class SecurityConfig {
 	        )
 	        .oauth2Login(oauth2 -> oauth2
 //	        		.successHandler(customOAuth2SuccessHandler(sessionRegistry()))
-	            .defaultSuccessUrl("http://localhost:3000/home", true) // redirect after Google login
+	            .defaultSuccessUrl("https://techjyot.up.railway.app/home", true) // redirect after Google login
 	        )
 	        .sessionManagement(session -> session
 		            .maximumSessions(1)
