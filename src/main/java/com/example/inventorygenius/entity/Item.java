@@ -153,6 +153,9 @@ public class Item {
     @Column (name = "user-email")
     private String userEmail;
 
+    @Column(columnDefinition = "vector(1536)") // adjust dimension to match your embedding model
+    private float[] embedding;
+
     public Item() {
 
     }
@@ -453,4 +456,6 @@ public String toString() {
         this.userEmail = userEmail;
     }
 
+    public float[] getEmbedding() { return embedding; }
+    public void setEmbedding(float[] embedding) { this.embedding = embedding; }
 }

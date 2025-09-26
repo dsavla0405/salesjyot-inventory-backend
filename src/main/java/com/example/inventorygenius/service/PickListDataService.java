@@ -86,7 +86,8 @@ public class PickListDataService {
                 stock.setLocation(order.getLocation());
                 stock.setMessage("pickList generated for order");
                 stock.setNumber("pickList Number = " + pickListData.getPickListNumber() + " order no = " + String.valueOf(order.getOrderNo()));
-
+                stock.setUserEmail(order.getUserEmail());
+                
                 stockService.addStock(stock);
             
 
