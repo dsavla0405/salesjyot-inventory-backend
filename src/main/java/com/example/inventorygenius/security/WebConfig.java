@@ -6,58 +6,40 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CommonsRequestLoggingFilter;
-//import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-
-
-
-
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
+
+    // Allow CORS for all controllers (extra safety)
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns("https://techjyot.up.railway.app") //http://localhost:3000
-                .allowedMethods("GET","POST","PUT","DELETE")
+                .allowedOriginPatterns(
+                    "http://localhost:3000",
+                    "http://localhost:3001",
+                    "http://localhost:8080",
+                    "http://localhost:8081"
+                )
+                .allowedMethods("GET","POST","PUT","DELETE","OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);
-        
-        System.out.println("---------------------heree in Web Config 111---------------");
-        
-        
-    }
-	
-	@Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-		System.out.println("---------------------heree in web Config 22222---------------");
-        CorsConfiguration config = new CorsConfiguration();
-        config.setAllowedOriginPatterns(List.of("https://techjyot.up.railway.app"));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
-        config.setAllowCredentials(true);  // boxed Boolean
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", config);
-        return source;
+        System.out.println("---------------------WebConfig CORS Config Loaded---------------");
     }
-    
-// ------------Use to log request coming from front end ---------------	
-	@Bean
-	public CommonsRequestLoggingFilter requestLoggingFilter() {
-		System.out.println("---------------------heree in web Config 33333---------------");
-		CommonsRequestLoggingFilter loggingFilter = new CommonsRequestLoggingFilter();
-		loggingFilter.setIncludeHeaders(true);
-	    loggingFilter.setIncludePayload(true);
-	    loggingFilter.setMaxPayloadLength(10000);
-	    loggingFilter.setAfterMessagePrefix("REQUEST DATA : ");
-	    return loggingFilter;
-	}
-	
-	
-    
-    
+
+    // Request logging filter for debugging frontend requests
+    @Bean
+    public CommonsRequestLoggingFilter requestLoggingFilter() {
+        System.out.println("---------------------WebConfig Request Logging Enabled---------------");
+        CommonsRequestLoggingFilter loggingFilter = new CommonsRequestLoggingFilter();
+        loggingFilter.setIncludeHeaders(true);
+        loggingFilter.setIncludePayload(true);
+        loggingFilter.setMaxPayloadLength(10000);
+        loggingFilter.setAfterMessagePrefix("REQUEST DATA : ");
+        return loggingFilter;
+    }
 }
